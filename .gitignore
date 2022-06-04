@@ -1,0 +1,17 @@
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log 
+npm-debug.log*  
+
+# OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# 感叹号就是这几条还是需要做源代码同步的。
