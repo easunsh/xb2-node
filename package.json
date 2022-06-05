@@ -9,7 +9,10 @@
   "keywords": [],
   "author": "sunyi",
   "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.7.3"
+  },
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.17.1"
   }
 }
