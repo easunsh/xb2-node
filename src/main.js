@@ -5,11 +5,14 @@ const res = require('express/lib/response');
 const app = express();  //创建一个应用
 const port = 3000; // 定义个服务端口
 
+//使用express全局中间件json,自动处理客户端发来JSON格式，
+app.use(express.json());
+
 app.listen( port , ()=> {
 	console.log('服务已经启动');
 });
 
-//app是我们创建的EXPRESS应用，只支持http get方法请求的路由
+//app是我们创建的EXPRESS应用，只支持http get方法请求的路由,都是express自带的，后面会用typescript改造。
 //用户访问如果是项目根，后面是函数处理器 req请求相关数据  ，res 响应处理
 app.get('/', ( request, response ) => {
 	response.send('这里是首页');
@@ -44,9 +47,8 @@ app.get( '/posts' , ( request, response ) => {
 
 
 
-//定义接口，判断用户请求决定处理
+//定义get接口，判断用户请求决定处理
 //更具 postId ，来做处理  用户访问路径 主机名/posts/1
-
 app.get('/posts/:postId',( request, response ) => {
 	
 	//结构的同名写法，获取内容ID 同 postId:postId
@@ -66,7 +68,26 @@ app.get('/posts/:postId',( request, response ) => {
 
 
 
+//定义POST接口，用来处理用户发表的内容
+app.post('/posts' , ( request , response ) => {
 
+	//获取用户要发表的内容 content要与客户端的json 属性名同名
+	const { content } = request.body;
+	
+	//获得客户端头部数据 带横线用以下表达方法，不然可以直接点出来
+	console.log(request.headers['home-name']);
+
+	//发给客户端的头部数据 
+	response.set( 'Home-Name','this is Beijing');
+	//设置状态码给客户端
+	response.status(201);
+	//响应 
+	response.send(
+		{ message : `成功创建了 ${ content }` }
+		
+		);
+
+});
 
 
 //-----------------------------------------------------------------------------------------
