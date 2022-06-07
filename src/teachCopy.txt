@@ -1,6 +1,7 @@
 //用 express 建立服务
-const { response } = require('express');
-const express = require('express');  //导入包
+//const { response } = require('express');   //express的写法导入包，后面用TSC改造，
+import express from 'express';  //用JS的写法
+
 const res = require('express/lib/response');
 const app = express();  //创建一个应用
 const port = 3000; // 定义个服务端口
@@ -91,7 +92,7 @@ app.post('/posts' , ( request , response ) => {
 
 
 //-----------------------------------------------------------------------------------------
-
+//用NODE的老方法 require 模块，后面将被TSC取代。
 //const http = require('http');  //通过 http使用里面的功能
 
 //模拟服务器端

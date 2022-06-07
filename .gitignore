@@ -1,4 +1,4 @@
-# compiled output
+# compiled output 哪些不要代码同步
 /dist
 /node_modules
 
