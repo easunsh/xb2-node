@@ -20,5 +20,5 @@ app.use(postRouter);  //use 应用就包含postRouter中包含的接口
 //开始use 默认异常处理器
 app.use( defaultErrorHandler );
 
-//导出应用为默认
+//导出应用为默认 默认为index
 export default app;
