@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "tsc-watch --onSuccess \"node dist/main.js\" ",
-    "format":"prettier --write \" src/**/*.ts \" "
+    "format": "prettier --write \" src/**/*.ts \" "
   },
   "keywords": [],
   "author": "sunyi",
@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/express": "^4.17.3",
     "@types/node": "^17.0.40",
+    "dotenv": "^8.2.0",
     "prettier": "1.19.1",
     "tsc-watch": "^4.2.3",
     "typescript": "^3.8.3"

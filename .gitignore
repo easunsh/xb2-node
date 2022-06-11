@@ -15,3 +15,6 @@ npm-debug.log*
 !.vscode/extensions.json
 
 # 感叹号就是这几条还是需要做源代码同步的。
+
+#app 忽略环境变量配置信息
+.env*
