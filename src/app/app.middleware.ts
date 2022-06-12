@@ -20,10 +20,15 @@ export const defaultErrorHandler = (
     next: NextFunction
 ) => {
     
+    if(error.message){  //控制台输出一下错误信息
+        console.log('发生了错误，请注意--->', error.message);
+    }
+
    let statusCode: number, message: string;
 
    //处理异常
    switch ( error.message ){
+
        default:
            statusCode = 500;
            message = '服务器出了点问题';

@@ -12,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.3",
+    "@types/mysql2": "github:types/mysql2",
     "@types/node": "^17.0.40",
     "dotenv": "^8.2.0",
     "prettier": "1.19.1",
@@ -19,6 +20,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0"
   }
 }
