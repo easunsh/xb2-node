@@ -64,3 +64,43 @@ export const createPost = async ( post: PostModel) => {
 
 
 
+/***
+ * 更新内容的
+ * 更新的ID 和 更新的内容
+ */
+export const updatePost = async ( postId:number , post: PostModel ) => {
+
+	//准备查询，第一个问号是更新的内容，第二个是更新的ID号
+	const statement = `
+		UPDATE post
+		SET ?
+		WHERE id = ?
+	`;
+
+	//执行查询 []里对应statement 2个问号要传的内容
+	const [data] = await connection.promise().query(statement,[post,postId]);
+	//提供数据
+	return data;
+};
+
+
+/**
+ * 删除数据用的接口
+ */
+export const deletePost = async (postId: number) => {
+
+	//准备SQL语句
+	const statement = `
+		DELETE FROM post
+		WHERE id = ?
+	`;
+
+	//执行查询
+	const [data]  = await connection.promise().query(statement,postId);
+
+	//返回数据
+	return data;
+
+}
+
+

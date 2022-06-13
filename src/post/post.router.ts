@@ -9,7 +9,6 @@ const router = express.Router();
 
 
 /**
- * 
  * 获得内容列表
  */
 //get 方法   postController中的index方法
@@ -17,11 +16,18 @@ router.get('/posts', requestUrl, postController.index );
 
 
 /**
- * 
  * 创建内容
- * 
  */
 router.post('/posts',postController.store);
 
+/**
+ * 更新内容 定义支持HTTP patch 更新接口
+ */
+ router.patch( '/posts/:postId' , postController.update );
+
+/**
+ * 删除内容 DELETE
+ */
+router.delete( '/posts/:postId', postController.destroy );
 
 export default router;

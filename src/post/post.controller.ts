@@ -1,6 +1,8 @@
 //引入所需要的类型
 import { Request,Response,NextFunction } from 'express';
-import { getPosts,createPost } from './post.service'; 
+import { getPosts,createPost, updatePost, deletePost } from './post.service'; 
+//导入LODASH
+import _ from 'lodash';
 
 //内容列表
 export const index = async (   //标记异步
@@ -61,9 +63,68 @@ export const store = async (
           response.status(201).send(data);
 
         }catch (error) {
-
+ //这样会把异常交给默认的异常处理器去处理。 app.middleware.ts中定义的
           next (error);
         }
 
     };
 
+    /**
+     * 更新内容的接口
+     */
+export const update = async(
+  request:　Request,
+  response: Response,
+  next: NextFunction
+
+) => {
+
+  //获取需要更新内容的ID
+  const { postId} = request.params; //所有的请求地址参数
+
+  //准备要更新的数据 更新title 会给CONTENT赋值NULL  会用LODASH改造
+  //const { title, content } = request.body;
+  const post = _.pick(request.body, ['title','content']);
+
+  //执行更新
+  try {
+
+    //const data = await updatePost( parseInt( postId , 10 ) ,{ title , content });
+     const data = await updatePost( parseInt( postId , 10 ) , post);
+    response.send(data);
+
+  } catch (error) {
+     //这样会把异常交给默认的异常处理器去处理。 app.middleware.ts中定义的
+      next( error );
+  }
+
+};
+
+
+/**
+ * 删除内容
+ */
+export const destroy = async (
+  request:　Request,
+  response: Response,
+  next: NextFunction
+
+) => {
+
+  //获取请求地址的内容ID
+  const { postId } = request.params;
+
+  //删除内容
+  try {
+
+    const data = await deletePost( parseInt( postId,10) );
+    response.send( data );
+
+  } catch (error) {
+ //这样会把异常交给默认的异常处理器去处理。 app.middleware.ts中定义的
+    next(error);
+    
+
+  }
+  
+};
