@@ -7,7 +7,7 @@ const router = express.Router();
 /**
  * 用户登录 
  */
-router.post( '/login', validateLoginData ,authController.login );
+router.post( '/login', validateLoginData , authController.login );
 
 
 /**

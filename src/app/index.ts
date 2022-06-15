@@ -8,10 +8,10 @@ import userRouter from '../user/user.router';
 //导入auth.router.ts
 import authRouter from '../auth/auth.router';
 
-//导入中间件
+//导入中间件 默认错误处理器
 import { defaultErrorHandler } from './app.middleware';
 
-//创建应用
+//创建EXPRESS 应用 app
 const app = express();
 
 //开始use  处理JSON
