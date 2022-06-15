@@ -22,15 +22,31 @@ import { UserModel } from './user.model';
 
 
 /**
- * 按用户名查找用户
+ * 按用户名查找用户 , 分传密码和不传密码2中选择
  * @returns 按用户名查找用户
  */
 
-export const getUserByName = async ( name: string ) => {   //标记为异步函数
+//接口简单理解就是一种约定，一种协议，使得实现接口的类在形式上保持一致
+interface GetUserOptions {
 	
+	password?:boolean;
+
+}
+
+export const getUserByName = async ( //标记为异步函数
+
+	name: string,
+	options: GetUserOptions = {}   //如未传值，给个默认值为空
+
+	) => {   
+	
+	const { password } = options;
+
+	//PASSWORD如果为true加上password字段去查 ，否则为空白
 	const statement = `
 	SELECT 
 		id,name
+		${ password ? ',password' : ''} 
         FROM user
 		WHERE name = ?
 	`;
