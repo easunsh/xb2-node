@@ -35,7 +35,7 @@ export const hashPassword = async(
     response: Response,
     next: NextFunction
 ) => {
-    //准备数据
+    //准备数据 解构
     const { password } = request.body;
 
     //HASH 密码 传入用户的密码，10为强度

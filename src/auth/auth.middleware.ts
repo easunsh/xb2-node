@@ -32,6 +32,11 @@ import bcrypt from 'bcrypt';   //对比密码用里面的功能 ，对比HASH过
     //返回密码不匹配
     if (!matched) return next( new Error('PASSWORD_DOES_NOT_MATCH'));
 
+
+    //在请求主体里添加用户,查询出来的用户
+    request.body.user = user;
+
+
     //下一步
     next();
 };

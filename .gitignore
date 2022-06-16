@@ -18,3 +18,5 @@ npm-debug.log*
 
 #app 忽略环境变量配置信息
 .env*
+# 忽略key文件
+config/*.key
