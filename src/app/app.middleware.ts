@@ -48,6 +48,11 @@ export const defaultErrorHandler = (
             statusCode = 400;  
             message = '密码不匹配请检查';
             break;
+        case 'UNAUTHORIZED':
+            statusCode = 401;  
+            message = '请先登录';
+            break;
+    
     
        default:
            statusCode = 500;

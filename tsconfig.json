@@ -16,7 +16,8 @@
     },
     
         "include" : ["src/**/*"],    /**要编译哪些文件，SRC下的所有***/
-        "exclude" : ["node_modules","dist"]
+        "exclude" : ["node_modules","dist"],
+        "files": ["types/express.d.ts"]
     
     
     }

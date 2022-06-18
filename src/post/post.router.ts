@@ -4,6 +4,9 @@ import express from 'express';
 import * as postController from './post.controller';
 import { requestUrl } from '../app/app.middleware'; 
 
+//验证用户身份
+import { authCuard } from '../auth/auth.middleware';
+
 //开始用ROUTER
 const router = express.Router();
 
@@ -18,7 +21,7 @@ router.get('/posts', requestUrl, postController.index );
 /**
  * 创建内容
  */
-router.post('/posts',postController.store);
+router.post('/posts', authCuard , postController.store);
 
 /**
  * 更新内容 定义支持HTTP patch 更新接口

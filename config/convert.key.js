@@ -1,5 +1,5 @@
 /**
- * 处理KEY
+ * 处理KEY的JS ，转成BASE64格式
  */
 const fs = require('fs');  // 导入FS模块
 const path = require('path');  //组织文件的路径

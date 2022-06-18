@@ -54,11 +54,14 @@ export const store = async (
         //准备需要存储的数据 ，从请求的主体json中解构出来，
         const { title ,content } = request.body;
 
+        //解构扩展出来的request.user 里的ID ，重命名为userid
+        const { id: userId } = request.user;
+
         //创建内容
         try {
 
           //将需要存储的内容交给函数
-          const data = await createPost( { title, content } );
+          const data = await createPost( { title, content, userId } );
           //做出一个响应
           response.status(201).send(data);
 

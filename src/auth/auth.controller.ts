@@ -11,23 +11,24 @@ import { signToken } from './auth.service';
     next: NextFunction
   ) => {
 
-      //准备数据 ，请求主体request的 USER
+      //准备数据 ，解构得到请求主体request的 USER
      const { 
       user: { id,name } ,
     } = request.body;
 
     //添加一个payload ，一个对象，里面用户的ID 和 NAME
-    const payload = { id ,name} ;
+    const payload = { id ,name } ;
 
     try {
       //签发令牌
       const token = signToken( { payload } );
 
       //做出响应
-      response.send({ id,name,token });
-    } catch(error) {
+      response.send( { id , name , token } );
 
-        next(error);
+    } catch( error ) {
+
+        next( error );
 
     }
 
@@ -38,5 +39,21 @@ import { signToken } from './auth.service';
 
        //做出响应
        //response.send({ message: `欢迎回来, ${name}`});
+
+  };
+
+
+  /**
+   * 令牌验证登录
+   */
+  export const validate = (
+
+    request:　Request,
+    response: Response,
+    next: NextFunction
+
+  ) => {
+    console.log(request.user);
+    response.sendStatus(200);
 
   };
