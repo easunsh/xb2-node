@@ -48,6 +48,10 @@ export const defaultErrorHandler = (
             statusCode = 400;  
             message = '密码不匹配请检查';
             break;
+        case 'USER_DOSE_NOT_OWN_RESOURCE':
+            statusCode = 403;  
+            message = '您不能处理这个内容';
+            break;
         case 'UNAUTHORIZED':
             statusCode = 401;  
             message = '请先登录';

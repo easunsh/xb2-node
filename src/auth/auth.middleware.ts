@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';   //对比密码用里面的功能 ，对比HASH过
 import jwt from 'jsonwebtoken';  //令牌功能
 import { PUBLIC_KEY } from '../app/app.config'; //令牌功能
 import { TokenPayload } from './auth.interface';
+import { possess } from './auth.service';  //验证权限
 
 /**
  * 验证用户登录数据的中间件
@@ -96,4 +97,80 @@ export const authCuard = (
 
         next( new Error('UNAUTHORIZED') );
     }
+};
+
+
+/**
+ * 访问控制
+ * 
+ */
+
+interface AccessControlOptions {
+    possession?: boolean;
+}
+
+/**
+ * accessControl 方法
+ * 配合 authCuard 一起使用 放在authCuard的后面，就能得到当前用户相关的数据
+ * @param options 
+ * @returns 
+ */
+export const accessControl  = ( options: AccessControlOptions ) => {
+    
+    return async (
+        request:　Request,
+        response: Response,
+        next: NextFunction
+    ) => {
+
+        console.log('访问控制');
+
+        //解构选项
+        const { possession } = options;
+
+        //当前用户ID  前提 accessControl 放在 authCuard 后使用
+        const { id: userId } = request.user;
+
+        //放行管理员
+        if ( userId == 1) return next();
+
+        //准备资源
+        //resourceIdParam 为请求的 id 值，
+        //请求参数中的request.params 为对象，Object.keys 截取出来，
+        //比如是POST功能，，例 xb2_api/posts/10 , resourceIdParam 值为 postId
+        const resourceIdParam = Object.keys( request.params )[0];
+
+        //以上例子 xb2_api/posts/10  ， postId 去掉 Id,值为post
+        const resourceType = resourceIdParam.replace('Id','');  
+
+         // 以上例子 request.params[postId], 值为10
+        const resourceId = parseInt( request.params[resourceIdParam] , 10 );  
+
+
+        //postId&post&10
+         console.log("resourceIdParam/" + resourceIdParam + "***"+"resourceType/" + resourceType + "***"+"resourceId/" + resourceId + "***"+"userId/" + userId );
+
+        /**
+         * 检查资源拥有权
+         * 如果 possession 在router中设置成了true
+         */
+        if ( possession ) {
+
+            try{
+
+                const ownResource = await possess( { resourceId , resourceType , userId } );
+
+                if( !ownResource ){
+                    return next( new Error('USER_DOSE_NOT_OWN_RESOURCE') )
+                }
+
+            } catch (error) {
+
+                return next(error);
+
+            }
+        }
+
+    };
+
 };
