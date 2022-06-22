@@ -6,8 +6,8 @@
         "removeComments":true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "allowSyntheticDefaultImports" : true,
-        "esModuleInterop":true,
+        "allowSyntheticDefaultImports" : true,/**获取照片附加信息***/
+        "esModuleInterop":true,/**获取照片附加信息***/
         "target":"es2017",
         "sourceMap":true,
         "outDir":"./dist",    /**编译后的文件输出目录***/

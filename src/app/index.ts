@@ -1,12 +1,11 @@
 //应用都放在这里
 import express from 'express';
 
-//导入post.router.ts
+//导入router
 import postRouter from '../post/post.router';
-//导入post.router.ts
 import userRouter from '../user/user.router';
-//导入auth.router.ts
 import authRouter from '../auth/auth.router';
+import fileRouter from '../file/file.router';
 
 //导入中间件 默认错误处理器
 import { defaultErrorHandler } from './app.middleware';
@@ -21,7 +20,7 @@ app.use( express.json() );
  * 开始use 处理路由
  * @return
  */
-app.use( postRouter , userRouter , authRouter );  // use 应用就包含postRouter中包含的接口
+app.use( postRouter , userRouter , authRouter , fileRouter );  // use 应用就包含postRouter中包含的接口
 
 
 //开始use 默认异常处理器

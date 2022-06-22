@@ -46,6 +46,7 @@ import { possess } from './auth.service';  //验证权限
 
 /**
  * 用令牌验证用户身份
+ * @return 用令牌验证用户身份
  */
 
 export const authCuard = (
