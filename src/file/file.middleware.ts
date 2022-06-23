@@ -41,7 +41,18 @@ export const fileProcessor = async (
         return next(error);
     }
 
-    console.log(image);
+    //console.log(image);
+
+    //准备需要的文件数据,解构IMAGE 中的
+    const { imageSize, tags } = image['_exif'];
+
+    //在请求中添加文件数据
+    request.fileMetaData = {
+        width: imageSize.width,
+        height: imageSize.height,
+        metadata: JSON.stringify(tags)   //转换成json格式数据
+    }
+
 
     //下一步
     next();

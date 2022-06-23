@@ -12,9 +12,14 @@ const router = express.Router();
 router.post('/files' , authCuard , fileInterceptor , fileProcessor ,fileController.store );
 
 /**
- * 文件服务接口
+ * 查看文件服务接口
  */
 router.get('/files/:fileId/serve', fileController.serve);
+
+/**
+ * 文件信息查看
+ */
+router.get('/files/:fileId/metadata', fileController.metadata);
 
 
 /**

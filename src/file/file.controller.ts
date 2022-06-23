@@ -36,11 +36,12 @@ export const store = async (
       const data = await createFile({
         ...fileInfo,
         userId,
-        postId: parseInt(`${postId}`, 10)
+        postId: parseInt(`${postId}`, 10),
+        ...request.fileMetaData
       });
 
         //做出响应
-    response.sendStatus(201).send(data);
+        response.status(201).send(data);
 
 
     } catch( error ){
@@ -84,4 +85,30 @@ export const store = async (
      }
 
   };
+
+
+  /**
+   * 用户调用读取文件信息接口
+   */
+  export const metadata = async (
+      request:　Request,
+      response: Response,
+      next: NextFunction
+    ) => {
+      //文件的id
+      const { fileId } = request.params;
+
+      try {
+        //查询文件数据
+        const file = await findFileById( parseInt( fileId , 10 ));
+
+        //准备响应数据 , 重新组织一下
+        const data = _.pick( file , ['id','size','width','height','metadata'] );
+        //做出响应
+        response.send(data);
+
+      } catch (error) {
+          next(error);
+      }
+   };
 
