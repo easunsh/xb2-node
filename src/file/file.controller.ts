@@ -55,7 +55,7 @@ export const store = async (
 
 
  /**
-  * 文件服务
+  * 查看文件服务
   */
  export const serve = async (
      request:　Request,

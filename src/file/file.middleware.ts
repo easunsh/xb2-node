@@ -1,5 +1,6 @@
 import { Request,Response,NextFunction } from 'express';
 import multer from 'multer';
+import Jimp from 'jimp';
 
 /**
  * 创建一个Multer
@@ -18,3 +19,31 @@ const fileUpload = multer({
  * 客户端上传的时候，表单名字设置成file
  */
 export const fileInterceptor = fileUpload.single('file');
+
+/**
+ * 文件处理器
+ * 读取上传文件附加信息
+ * 放在 router 中 fileInterceptor 后
+ * 可以得到上传的文件的信息
+ */
+export const fileProcessor = async (
+    request:　Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    const { path }  = request.file;
+    let image: Jimp;
+
+    try {
+        //读取图像文件
+        image = await Jimp.read( path );      
+    } catch (error) {
+        return next(error);
+    }
+
+    console.log(image);
+
+    //下一步
+    next();
+    
+ };
