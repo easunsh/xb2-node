@@ -4,7 +4,7 @@ import * as fileController from './file.controller';
 import { fileInterceptor , fileProcessor  } from './file.middleware';
 
 const router = express.Router();
-
+ 
 /**
  * 上传文件
  */

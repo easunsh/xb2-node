@@ -1,5 +1,7 @@
 import { connection } from '../app/database/mysql';
 import { FileModel } from './file.model';
+import path from 'path';  //组织一个文件路径
+import Jimp from 'jimp';
 
 /**
  * 存储文件信息
@@ -39,3 +41,64 @@ return data;
 	return data[0];
 
   };
+
+  /**
+   * 调整图像尺寸的功能
+   */
+  export const imageResizer = async (
+
+     image: Jimp, file: Express.Multer.File
+
+    ) => {
+
+      //图像尺寸
+      const { imageSize } = image['_exif'];
+
+      /**
+       * 文件路径
+       * file.destination 存储文件的目录 如 upload
+       * upload目录下的 resized 目录下
+       * filename 文件的名字
+       */
+      const filePath = path.join( file.destination , 'resized', file.filename );
+
+      /**
+       * 处理大尺寸
+       * quality 图像质量
+       * write 将处理的结果写入文件 ，设置一个路径
+       */
+      if ( imageSize.width > 1280 ) {
+
+        image
+          .resize( 1280, Jimp.AUTO )
+          .quality(85)
+          .write(`${filePath}-large`);
+
+      }
+
+
+      /**
+       * 处理中等尺寸
+       */
+       if ( imageSize.width > 640 ) {
+
+        image
+          .resize( 640, Jimp.AUTO )
+          .quality(85)
+          .write(`${filePath}-medium`);
+
+      }
+
+      /**
+       * 处理缩略图
+       */
+       if ( imageSize.width > 320 ) {
+
+        image
+          .resize( 320, Jimp.AUTO )
+          .quality(85)
+          .write(`${filePath}-thumbnail`);
+
+      }
+      
+   };
