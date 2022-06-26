@@ -21,7 +21,7 @@ router.get('/posts', requestUrl, postController.index );
 /**
  * 创建内容
  */
-router.post('/posts', authCuard , postController.store);
+router.post('/posts', authCuard , postController.store );
 
 /**
  * 更新内容 定义支持HTTP patch 更新接口

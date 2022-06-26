@@ -47,6 +47,7 @@ import { possess } from './auth.service';  //验证权限
 /**
  * 用令牌验证用户身份
  * @return 用令牌验证用户身份
+ * 非常重要的方法，使用了authCuard ，后面的方法能从request中得到user的属性
  */
 
 export const authCuard = (
