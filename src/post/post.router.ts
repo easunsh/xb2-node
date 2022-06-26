@@ -48,6 +48,25 @@ postController.destroy );
 
 
 /**
+ * 添加内容与标签的绑定
+ */
+router.post('/posts/:postId/tag' , 
+authCuard ,
+accessControl({ possession: true }),
+postController.storePostTag,
+ );
+
+ /**
+  * 移除内容上的标签
+  */
+ 
+  router.delete('/posts/:postId/tag' , 
+  authCuard ,
+  accessControl({ possession: true }),
+  postController.destroyPostTag,
+   );
+
+/**
  * 导出
  */
 export default router;

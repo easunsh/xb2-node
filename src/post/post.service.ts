@@ -103,4 +103,70 @@ export const deletePost = async (postId: number) => {
 
 }
 
+/**
+ * 保存内容与标签的关联
+ */
+export const createPostTag = async (
+   postId: number , tagId: number
+  ) => {
 
+	//查询语句
+	const statement = `
+		INSERT INTO post_tag ( postId , tagId )
+		VALUES(?,?)
+	`;
+
+	//执行查询
+	const [data]  = await connection.promise().query(statement,[ postId , tagId ]);
+
+	//返回数据
+	return data;
+	
+ };
+
+
+ /**
+  * 检查内容是否已经打上某标签
+  */
+ export const postHasTag = async (
+		postId: number , tagId: number
+   ) => {
+
+	//sql语句
+	const statement = `
+		SELECT * FROM post_tag
+		WHERE postId = ? AND tagId = ?
+	`;
+
+	//执行查询
+	const [data]  = await connection.promise().query(statement,[ postId , tagId ]);
+	 
+	/**
+	 * 提供数据
+	 * 判断是否有值
+	 * 有值TRUE 否则FALSE
+	 */
+	return data[0] ?  true : false;
+  };
+
+
+/**
+ * 删除一条内容与标签的关联
+ */
+ export const deletePostTag = async (
+	postId: number , tagId: number
+   ) => {
+ 
+	 //查询语句
+	 const statement = `
+		 DELETE FROM post_tag
+		 WHERE postId = ? AND tagId = ? 
+	 `;
+ 
+	 //执行查询
+	 const [data]  = await connection.promise().query(statement,[ postId , tagId ]);
+ 
+	 //返回数据
+	 return data;
+	 
+  };

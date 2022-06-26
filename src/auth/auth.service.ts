@@ -36,6 +36,8 @@ interface PossessOptions {
 
 export const possess = async ( options: PossessOptions ) => {
 
+    console.log("possess已经进入service");
+
     //准备解构选项
     const { resourceId , resourceType , userId } = options; 
 
@@ -54,8 +56,12 @@ export const possess = async ( options: PossessOptions ) => {
     .promise()
     .query( statment , [ resourceId , userId ] );
 
+    console.log(data[0].count);
+
     //提供返回结果
     return data[0].count ? true: false;
+
+    
 
 };
 

@@ -103,7 +103,7 @@ export const authCuard = (
 
 /**
  * 访问控制
- * 
+ * 检查该用户能否访问该资源，是否拥有该资源的所有权
  */
 
 interface AccessControlOptions {
@@ -159,11 +159,16 @@ export const accessControl  = ( options: AccessControlOptions ) => {
 
             try{
 
+                console.log('进入了possession检查资源拥有权');
+
                 const ownResource = await possess( { resourceId , resourceType , userId } );
 
                 if( !ownResource ){
-                    return next( new Error('USER_DOSE_NOT_OWN_RESOURCE') )
+                    return next( new Error('USER_DOSE_NOT_OWN_RESOURCE') );
                 }
+
+              
+                
 
             } catch (error) {
 
@@ -171,6 +176,9 @@ export const accessControl  = ( options: AccessControlOptions ) => {
 
             }
         }
+
+           //下一步
+           next();
 
     };
 

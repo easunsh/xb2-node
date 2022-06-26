@@ -1,8 +1,22 @@
 //引入所需要的类型
 import { Request,Response,NextFunction } from 'express';
-import { getPosts,createPost, updatePost, deletePost } from './post.service'; 
 //导入LODASH
 import _ from 'lodash';
+import { 
+  getPosts,
+  createPost, 
+  updatePost, 
+  deletePost,
+  createPostTag,
+  postHasTag,
+  deletePostTag
+ } from './post.service'; 
+
+import { tagModel } from '../tag/tag.model'; 
+import { getTabByName , createTag  } from '../tag/tag.service';
+ 
+
+
 
 //内容列表
 export const index = async (   //标记异步
@@ -132,3 +146,89 @@ export const destroy = async (
   }
   
 };
+
+
+/**
+ * 添加内容与标签的关联
+ */
+export const storePostTag = async (
+    request:　Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+
+    //准备数据 body中的tag是个json对象
+    const { postId } = request.params;
+    const { name } = request.body; 
+
+    let tag: tagModel;
+
+    //查找标签是否存在
+    try {
+      tag = await getTabByName( name );
+    } catch (error) {
+      return next(error);
+    }
+    
+    //如果数据库内有该标签
+    if(tag){
+      
+        try {
+           //查看该标签是否与内容已经绑定
+          const postTag = await postHasTag( parseInt(postId , 10) , tag.id);
+          if ( postTag ) return next( new Error('POST_ALREADY_HAS_THIS_TAG') );
+
+        } catch (error) {
+            return next(error);
+        }
+
+    }
+
+    //如果数据库内没有该标签，需要先创建
+    if( !tag ){
+
+      try {
+        const data = await createTag({ name });
+
+        //data.inertId 为创建的数据记录的id 号，新鲜出炉，需要将data返回时候设置成as any类型
+        tag = { id: data.insertId };
+        console.log("----new tag id is "+tag.id);
+      } catch (error) {
+        return next(error);
+      }
+
+    }
+
+
+    //最后给内容打上标签
+    try {
+      await createPostTag( parseInt(postId , 10) , tag.id);
+      response.sendStatus(201);
+    } catch (error) {
+      return next(error);
+    }
+    
+ };
+
+ /**
+  * 移除内容上的标签
+  */
+ export const destroyPostTag = async (
+     request:　Request,
+     response: Response,
+     next: NextFunction
+   ) => {
+     //准备数据 ,body中的tag是个json对象,postId是string
+     const { postId } = request.params;
+     const { tagId } = request.body;
+
+     //移除内容标签
+     try {
+      await deletePostTag( parseInt(postId , 10) , tagId );
+      response.sendStatus(200);
+     } catch (error) {
+      next(error);
+     }
+
+
+  };
