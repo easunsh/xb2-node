@@ -67,3 +67,24 @@ export const createComment = async (
       //提供数据
       return data;
    };
+
+
+/**
+ * 删除评论功能
+ */
+export const deleteComment = async (
+   commentId: number
+  ) => {
+    //准备sql
+    const statement = `
+      DELETE FROM comment
+      WHERE id = ?
+    `;
+
+
+    //执行SQL
+    const [data] =  await connection.promise().query( statement ,commentId );
+
+    //返回数据
+    return data;
+ };
