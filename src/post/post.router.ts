@@ -2,7 +2,10 @@ import express from 'express';
 
 //引入POST 的 controller
 import * as postController from './post.controller';
-import { requestUrl } from '../app/app.middleware'; 
+//import { requestUrl } from '../app/app.middleware'; 
+
+//排序
+import { sort , filter } from './post.middleware';
 
 //验证用户身份
 import { authCuard , accessControl } from '../auth/auth.middleware';
@@ -12,10 +15,12 @@ const router = express.Router();
 
 
 /**
- * 获得内容列表
+ * 获得内容列表 GET
+ * sort: 
+ * 'early' / last / most_comments /  default: 'post.id DESC'
+ * postController中的index方法
  */
-//get 方法   postController中的index方法
-router.get('/posts', requestUrl, postController.index );
+router.get('/posts', sort , filter , postController.index );
 
 
 /**

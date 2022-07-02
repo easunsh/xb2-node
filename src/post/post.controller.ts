@@ -29,7 +29,12 @@ export const index = async (   //标记异步
     try {
 
       //加入await，去等待一个执行的结果
-      const posts = await getPosts();
+      //sort 是排序选项，需要去扩展request的类型
+      const posts = await getPosts( { 
+        sort: request.sort , 
+        filter: request.filter,
+      } );
+      
       response.send(posts);
 
 

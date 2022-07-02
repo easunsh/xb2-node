@@ -1,29 +1,71 @@
 import { connection } from '../app/database/mysql';  //数据库连接
 import { PostModel } from './post.model';
+import { sqlFragment } from './post.provider';
+
+/**
+ * 获取内容列表
+ * 可排序利用interface
+ * @returns 
+ */
+/**
+ * sql中的 where 条件
+ * 	name 是过滤器的名字
+ *  sql 是sql语句
+ *  param 是占位符的值
+ * */
+ 
+export interface GetPostsOptionsFilter {
+	name: string;
+	sql?: string;
+	param?: string;
+}
 
 
-export const getPosts = async () => {   //标记为异步函数
+// sql中的 order by
+interface GetPostsOptions {
+
+	sort?: string;	
+	filter?: GetPostsOptionsFilter;
+}
+
+export const getPosts = async ( options: GetPostsOptions ) => {   //标记为异步函数
 	
+	const { sort , filter } = options;
+
+	//sql 执行查询给sql占位符提供的值
+	let params: Array<any> = [];
+	if( filter.param ){
+
+		params = [ filter.param , ...params ];
+	}
+
+	//设置sql参数
+	
+
 	//JSON_OBJECT 组织一个JSON对象 as 个名字user
 	const statement = `
 	SELECT 
 		post.id,
 		post.title,
 		post.content,
-		JSON_OBJECT(
-			'id',user.id,
-			'name',user.name
-		) as user
+		${ sqlFragment.user },
+		${ sqlFragment.totalComments },
+		${ sqlFragment.file},
+		${ sqlFragment.tags }
 	FROM post
-    LEFT JOIN user
-     ON user.id = post.userID;
+	  ${ sqlFragment.leftJoinUser }
+	  ${ sqlFragment.leftJoinOneFile }
+	  ${ sqlFragment.leftJoinTag }
+	  WHERE ${ filter.sql }
+	  GROUP BY post.id
+	  ORDER BY ${ sort }
 	`;
 
 
 
 	//用connection的方法，返回结果是个数组，
 	//需要第一个项目是我们需要的数据 ，用await等待执行，函数需要标记为async
-	const [data]  = await connection.promise().query(statement);
+	const [data]  = await connection.promise().query(statement , params );
 	
 	return data;
 
