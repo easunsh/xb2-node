@@ -10,7 +10,7 @@ import { sqlFragment } from './post.provider';
 /**
  * sql中的 where 条件
  * 	name 是过滤器的名字
- *  sql 是sql语句
+ *  sql 是sql语句,包含占位符
  *  param 是占位符的值
  * */
  
@@ -20,20 +20,38 @@ export interface GetPostsOptionsFilter {
 	param?: string;
 }
 
+/**
+ * 分页
+ * limit 当前页展示几条
+ * offset 偏移量
+ */
+export interface GetPostOptionsPagination {
+
+	limit: number;
+	offset: number;
+}
+
 
 // sql中的 order by
 interface GetPostsOptions {
 
 	sort?: string;	
 	filter?: GetPostsOptionsFilter;
+	pagination?: GetPostOptionsPagination;
 }
 
+
+/**
+ * 查询内容的主程序
+ * @param options 
+ * @returns 
+ */
 export const getPosts = async ( options: GetPostsOptions ) => {   //标记为异步函数
 	
-	const { sort , filter } = options;
+	const { sort , filter , pagination: { limit , offset } } = options;
 
 	//sql 执行查询给sql占位符提供的值
-	let params: Array<any> = [];
+	let params: Array<any> = [ limit , offset ];
 	if( filter.param ){
 
 		params = [ filter.param , ...params ];
@@ -59,12 +77,15 @@ export const getPosts = async ( options: GetPostsOptions ) => {   //标记为异
 	  WHERE ${ filter.sql }
 	  GROUP BY post.id
 	  ORDER BY ${ sort }
+	  LIMIT ?
+	  OFFSET ?
 	`;
 
 
 
 	//用connection的方法，返回结果是个数组，
 	//需要第一个项目是我们需要的数据 ，用await等待执行，函数需要标记为async
+	//params 为占位符的具体值
 	const [data]  = await connection.promise().query(statement , params );
 	
 	return data;
@@ -212,3 +233,34 @@ export const createPostTag = async (
 	 return data;
 	 
   };
+
+  /**
+   * 统计内容数量 给客户端
+   */
+  export const getPostsTotalCount = async (
+	 options: GetPostsOptions
+	) => {
+
+		const { filter } = options;
+
+		//sql 参数
+		let params = [ filter.param ];
+
+		//准备查询
+		const statement = `
+			SELECT
+			 COUNT(DISTINCT post.id) AS total
+			 FROM post
+			 ${ sqlFragment.leftJoinUser }
+			 ${ sqlFragment.leftJoinOneFile }
+			 ${ sqlFragment.leftJoinTag }
+			 WHERE ${ filter.sql }
+		`;
+
+		//执行查询
+		const [data] = await connection.promise().query( statement , params );
+
+		//提供结果
+		return data[0].total;
+	  
+   };

@@ -4,8 +4,8 @@ import express from 'express';
 import * as postController from './post.controller';
 //import { requestUrl } from '../app/app.middleware'; 
 
-//排序
-import { sort , filter } from './post.middleware';
+//排序、条件查询 ,分页
+import { sort , filter , paginate } from './post.middleware';
 
 //验证用户身份
 import { authCuard , accessControl } from '../auth/auth.middleware';
@@ -20,7 +20,7 @@ const router = express.Router();
  * 'early' / last / most_comments /  default: 'post.id DESC'
  * postController中的index方法
  */
-router.get('/posts', sort , filter , postController.index );
+router.get('/posts', sort , filter , paginate , postController.index );
 
 
 /**

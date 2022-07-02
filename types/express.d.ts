@@ -1,5 +1,10 @@
 import { TokenPayload } from '../src/auth/auth.interface' ;
-import { GetPostsOptionsFilter } from '../src/post/post.service';
+import { 
+    GetPostsOptionsFilter, 
+    GetPostOptionsPagination
+} from '../src/post/post.service';
+
+
 
 /**
  * 扩展REQUEST，要往里面添加新的属性
@@ -15,6 +20,7 @@ declare global {
             fileMetaData: { width?: number; height?: number; metadata?: {} };
             sort: string;
             filter: GetPostsOptionsFilter;
+            pagination: GetPostOptionsPagination;
         }
 
     }

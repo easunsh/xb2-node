@@ -9,7 +9,8 @@ import {
   deletePost,
   createPostTag,
   postHasTag,
-  deletePostTag
+  deletePostTag,
+  getPostsTotalCount
  } from './post.service'; 
 
 import { tagModel } from '../tag/tag.model'; 
@@ -25,14 +26,26 @@ export const index = async (   //标记异步
     next: NextFunction
 ) => {
 
+    try {
+      //统计内容数量
+      const totalCount = await getPostsTotalCount( { filter : request.filter } );
+
+      //设置响应头部
+      response.header('X-Total-Count' , totalCount );
+      
+    } catch (error) {
+      next(error);
+    }
   
     try {
 
       //加入await，去等待一个执行的结果
       //sort 是排序选项，需要去扩展request的类型
+      //filter 地址栏传入查询的类型，
       const posts = await getPosts( { 
         sort: request.sort , 
         filter: request.filter,
+        pagination: request.pagination,
       } );
       
       response.send(posts);
