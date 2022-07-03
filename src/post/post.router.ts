@@ -19,6 +19,7 @@ const router = express.Router();
  * sort: 
  * 'early' / last / most_comments /  default: 'post.id DESC'
  * postController中的index方法
+ * paginate 分页
  */
 router.get('/posts', sort , filter , paginate , postController.index );
 

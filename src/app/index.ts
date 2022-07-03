@@ -8,6 +8,7 @@ import authRouter from '../auth/auth.router';
 import fileRouter from '../file/file.router';
 import tagRouter from '../tag/tag.router';
 import commentRouter from '../comment/comment.router';
+import avatarRouter from '../avatar/avatar.router';
 
 //导入中间件 默认错误处理器
 import { defaultErrorHandler } from './app.middleware';
@@ -28,6 +29,7 @@ app.use(
      authRouter , 
      fileRouter , 
      tagRouter ,
+     avatarRouter,
      commentRouter,
 );  
 
