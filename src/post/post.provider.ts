@@ -85,5 +85,18 @@ export const sqlFragment = {
         ) AS tags
     `,
 
+    totalLikes:`
+        (
+            SELECT COUNT(user_like_post.postId)
+            FROM user_like_post
+            WHERE user_like_post.postId = post.id
+        ) AS totalLikes          
+    `,
+
+    innerJoinUserLikePost:`
+        INNER JOIN user_like_post
+         ON user_like_post.postId = post.id
+    `,
+
 
 };

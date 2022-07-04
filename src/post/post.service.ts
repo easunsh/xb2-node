@@ -69,11 +69,13 @@ export const getPosts = async ( options: GetPostsOptions ) => {   //标记为异
 		${ sqlFragment.user },
 		${ sqlFragment.totalComments },
 		${ sqlFragment.file},
-		${ sqlFragment.tags }
+		${ sqlFragment.tags },
+		${ sqlFragment.totalLikes }
 	FROM post
 	  ${ sqlFragment.leftJoinUser }
 	  ${ sqlFragment.leftJoinOneFile }
 	  ${ sqlFragment.leftJoinTag }
+	  ${ filter.name == 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
 	  WHERE ${ filter.sql }
 	  GROUP BY post.id
 	  ORDER BY ${ sort }
@@ -254,6 +256,7 @@ export const createPostTag = async (
 			 ${ sqlFragment.leftJoinUser }
 			 ${ sqlFragment.leftJoinOneFile }
 			 ${ sqlFragment.leftJoinTag }
+			 ${ filter.name == 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
 			 WHERE ${ filter.sql }
 		`;
 

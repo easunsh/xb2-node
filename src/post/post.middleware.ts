@@ -89,6 +89,18 @@ export const sort = async (
 
      }
 
+      // 过滤用户点赞过的内容
+      if ( user && action == 'liked' && !tag) {
+        
+        request.filter = {
+            name: 'userLiked',
+            sql: 'user_like_post.userId = ?',
+            param: `${user}`,
+
+        }
+
+     }
+
 
      //下一步
      next();
