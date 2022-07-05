@@ -267,3 +267,43 @@ export const createPostTag = async (
 		return data[0].total;
 	  
    };
+
+   /**
+	* 根据内容ID获得内容详情
+	*/
+   export const getPostById = async (
+	  postId: number
+	 ) => {
+		//sql ready
+		const statement = `
+			SELECT 
+				post.id,
+				post.title,
+				post.content,
+				${ sqlFragment.user },
+				${ sqlFragment.totalComments },
+				${ sqlFragment.file },
+				${ sqlFragment.tags }, 
+				${ sqlFragment.totalLikes }
+			FROM post
+				${ sqlFragment.leftJoinUser }
+				${ sqlFragment.leftJoinOneFile }
+				${ sqlFragment.leftJoinTag }
+			WHERE post.id = ?
+		`;
+
+			//执行查询
+			const [data] = await connection.promise().query( statement , postId );
+
+			//如果没有找到相关内容
+			if( !data[0].id){
+
+				throw new Error('POSTS_NOT_FOUND');
+
+			}
+
+			//提供结果
+			return data[0];
+
+	   
+	};

@@ -15,6 +15,12 @@ const router = express.Router();
 
 
 /**
+ * 获得单个内容 by id
+ */
+ router.get('/posts/:postId', postController.showPostById );
+
+
+/**
  * 获得内容列表 GET
  * sort: 
  * 'early' / last / most_comments /  default: 'post.id DESC'

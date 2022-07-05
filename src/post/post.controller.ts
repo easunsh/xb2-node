@@ -10,7 +10,8 @@ import {
   createPostTag,
   postHasTag,
   deletePostTag,
-  getPostsTotalCount
+  getPostsTotalCount,
+  getPostById
  } from './post.service'; 
 
 import { tagModel } from '../tag/tag.model'; 
@@ -30,7 +31,7 @@ export const index = async (   //标记异步
       //统计内容数量
       const totalCount = await getPostsTotalCount( { filter : request.filter } );
 
-      //设置响应头部
+      //设置响应头部 返回给客户端
       response.header('X-Total-Count' , totalCount );
       
     } catch (error) {
@@ -250,3 +251,33 @@ export const storePostTag = async (
 
 
   };
+
+  /**
+   * 查询单个内容
+   * post by id
+   */
+  export const showPostById = async (
+      request:　Request,
+      response: Response,
+      next: NextFunction
+    ) => {
+
+      //准备数据
+      const { postId } = request.params;
+
+      //调取内容
+      try {
+
+        const post = await getPostById( parseInt( postId , 10 ) );
+
+        //做出响应
+        response.send(post);
+ 
+      } catch (error) {
+
+        next( error );
+        
+      }
+
+      
+   };

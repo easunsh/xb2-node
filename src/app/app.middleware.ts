@@ -81,6 +81,10 @@ export const defaultErrorHandler = (
                     statusCode = 400;  
                     message = '文件上传格式不被支持';
                     break;
+        case 'POSTS_NOT_FOUND':
+                    statusCode = 404;  
+                    message = '没找到相关内容';
+                    break;
                  
                     
        default:
