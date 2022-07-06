@@ -1,7 +1,16 @@
 //引入所需要的类型
 import { Request,Response,NextFunction } from 'express';
 import { parse } from 'path';
-import { createComment , isReplyComment, updateComment ,deleteComment } from './comment.service';
+import { 
+  createComment , 
+  isReplyComment, 
+  updateComment ,
+  deleteComment,
+  getComments
+
+} from './comment.service';
+
+
 
 /**
  * 发表评论
@@ -138,3 +147,28 @@ export const store = async (
         }
        
     };
+
+
+    /**
+     * 获取评论列表
+     */
+    export const index = async (
+        request:　Request,
+        response: Response,
+        next: NextFunction
+      ) => {
+
+        try {
+
+          const comments = await getComments({ filter: request.filter });
+
+          //做出响应
+          response.send( comments );
+
+        } catch (error) {
+          
+          next( error );
+
+        }
+        
+     };

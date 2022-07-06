@@ -34,4 +34,15 @@
 
 	},
 
+
+	"Connection sql Quary" : {
+
+		"prefix" : "awtc" ,
+		"body" : [
+			"  const [data] =  await connection.promise().query( statement , $1 );"
+		
+		]
+
+	},
+
 }
