@@ -1,5 +1,7 @@
 /**
  * 查询片段
+ * totalReplies 评论总数
+ * repliedComment 回复的列表
  */
 
 export const sqlFragment = {
@@ -27,7 +29,32 @@ export const sqlFragment = {
             'id',post.id,
             'title',post.title
         ) AS post
-     `,       
+     `, 
+     repliedComment:`
+            (
+                SELECT
+                 JSON_OBJECT(
+                    'id', repliedComment.id,
+                    'content', repliedComment.content
+                 )
+             FROM
+                 comment repliedComment
+             WHERE
+                comment.parentId = repliedComment.id
+
+            ) AS repliedComment
+     `,
+
+     totalReplies: `
+        (
+            SELECT 
+              COUNT(reply.id)
+            FROM 
+              comment reply
+            WHERE 
+               reply.parentId = comment.id
+        ) AS totalReplies
+     `,
 
 
 

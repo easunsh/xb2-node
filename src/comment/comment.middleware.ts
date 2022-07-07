@@ -31,6 +31,31 @@ export const filter = async (
 
     }
 
+    //用户发表的评论,不包含回复
+    if( user && action == 'published' && !post ){
+
+        request.filter = {
+            name: 'userPublished',
+            sql: 'comment.parentId is NULL AND comment.userId = ?',
+            param:  `${user}`,
+
+        };
+
+    }
+
+
+    //过滤用户的回复内容
+    if( user && action == 'replied' && !post ){
+
+        request.filter = {
+            name: 'userReplied',
+            sql: 'comment.parentId is NOT NULL AND comment.userId = ?',
+            param:  `${user}`,
+
+        };
+
+    }
+
 
     //下一步
     next();
