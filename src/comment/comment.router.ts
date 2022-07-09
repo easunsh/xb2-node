@@ -3,6 +3,10 @@ import { accessControl, authCuard } from '../auth/auth.middleware';
 import * as commentController from './comment.controller';
 import { filter } from './comment.middleware';
 
+//分页数据配置文件
+import { paginate } from '../post/post.middleware';
+import { COMMENTS_PER_PAGE  } from '../app/app.config';
+
 const router = express.Router();
 
 /**
@@ -43,7 +47,21 @@ router.delete(
 /**
  * 获取评论列表
  */
-router.get('/comments' , filter , commentController.index );
+router.get(
+    '/comments' , 
+    filter , 
+    paginate( COMMENTS_PER_PAGE ),
+    commentController.index
+ );
+
+ /**
+  * 回复列表
+  */
+
+ router.get(
+    '/comments/:commentId/replies',
+    commentController.indexReplies
+    );
 
 /**
  * 导出

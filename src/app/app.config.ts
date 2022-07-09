@@ -21,5 +21,10 @@ export const {
 /**
  * 内容分页配置
  */
-export const { POSTS_PER_PAGE } = process.env;
+//export const { POSTS_PER_PAGE } = process.env;
+export const POSTS_PER_PAGE  =  parseInt( process.env['POSTS_PER_PAGE'] , 10 );
 
+/**
+ * 评论分页参数配置
+ */
+export const COMMENTS_PER_PAGE  =  parseInt( process.env['COMMENTS_PER_PAGE'] , 10 );

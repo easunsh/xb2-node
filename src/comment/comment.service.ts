@@ -1,7 +1,7 @@
 import { connection } from '../app/database/mysql';  //数据库连
 import { CommentModel } from './comment.model';
 import { sqlFragment } from './comment.provider';
-import { GetPostsOptionsFilter } from '../post/post.service';
+import { GetPostsOptionsFilter , GetPostOptionsPagination } from '../post/post.service';
 
 /**
  * 创建评论
@@ -98,18 +98,22 @@ export const deleteComment = async (
 
 interface getCommentsOptions {
   filter?: GetPostsOptionsFilter;
+  pagination?: GetPostOptionsPagination;
 
 }
-
 
 export const getComments = async (
    options: getCommentsOptions
   ) => {
 
     //解构
-    const { filter } = options;
+    const { 
+      filter , 
+      pagination: { limit , offset } ,
+    } = options;
 
-    let params: Array<any> = [];
+    //将每页分页数量和偏移量 设置进 params 替代占位符的值
+    let params: Array<any> = [ limit , offset ];
 
     // 设置sql 参数
     if(filter.param) {
@@ -137,6 +141,8 @@ export const getComments = async (
         comment.id
        ORDER BY 
         comment.id DESC
+      LIMIT ?
+      OFFSET ?
     `;
 
     //sql query
@@ -144,3 +150,85 @@ export const getComments = async (
     //return data
     return data;
  };
+
+
+ /**
+  * 获得评论的数量
+  */
+ export const getCommentsTotalCount = async (
+    option: getCommentsOptions
+   ) => {
+    //解构选项
+    const { filter } = option;
+
+    //SQL参数
+    let params: Array<any> = [];
+
+    //设置SQL参数
+    if( filter.param ) {
+      
+      params = [ filter.param , ...params ];
+
+    }
+
+    //准备查询
+    const statement =`
+      SELECT 
+        COUNT(
+          DISTINCT comment.id
+        ) as total
+      FROM
+        comment
+      ${sqlFragment.leftJoinUser}
+      ${sqlFragment.leftJoinPost}
+      WHERE
+       ${filter.sql}
+    `;
+
+    //执行
+      const [data] =  await connection.promise().query( statement , params  );
+    
+     //提供结果
+     return data[0].total;
+  };
+
+
+  /**
+   * 获得回复列表
+   */
+
+  interface GetCommentsRepliesOptions {
+    commentId: number;
+  }
+
+
+  export const getCommentsReplies = async (
+     options: GetCommentsRepliesOptions
+    ) => {
+
+      //解构
+      const { commentId} = options;
+      
+      //准备查询
+      const statement =`
+       SELECT
+        comment.id,
+        comment.content,
+        ${sqlFragment.user}
+        FROM
+         comment
+         ${sqlFragment.leftJoinUser}
+         WHERE
+          comment.parentId = ?
+        GROUP BY
+          comment.id
+       `;
+      //执行
+        const [data] =  await connection.promise().query( statement , commentId);
+      //提供结果
+       return data;
+
+
+   };
+
+   

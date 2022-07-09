@@ -32,7 +32,13 @@ export interface GetPostOptionsPagination {
 }
 
 
-// sql中的 order by
+/**
+ * sql中的所需
+ * sort 排序
+ * filter 过滤地址栏参数做判断
+ * pagination 分页参数
+ */
+
 interface GetPostsOptions {
 
 	sort?: string;	

@@ -9,6 +9,8 @@ import { sort , filter , paginate } from './post.middleware';
 
 //验证用户身份
 import { authCuard , accessControl } from '../auth/auth.middleware';
+//分页数据配置文件
+import { POSTS_PER_PAGE  } from '../app/app.config';
 
 //开始用ROUTER
 const router = express.Router();
@@ -22,12 +24,21 @@ const router = express.Router();
 
 /**
  * 获得内容列表 GET
- * sort: 
- * 'early' / last / most_comments /  default: 'post.id DESC'
+ * sort: 'early' / last / most_comments /  default: 'post.id DESC'
  * postController中的index方法
  * paginate 分页
- */
-router.get('/posts', sort , filter , paginate , postController.index );
+ *  /**filter
+  * 过滤内容列表用的
+  * 更具地址栏传过来的参数
+  */
+
+router.get(
+  '/posts', 
+  sort , 
+  filter , 
+  paginate(POSTS_PER_PAGE) , 
+  postController.index
+);
 
 
 /**

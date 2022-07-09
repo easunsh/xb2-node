@@ -31,7 +31,7 @@ export const index = async (   //标记异步
       //统计内容数量
       const totalCount = await getPostsTotalCount( { filter : request.filter } );
 
-      //设置响应头部 返回给客户端
+      //将 统计内容数量 设置响应头部 返回给客户端
       response.header('X-Total-Count' , totalCount );
       
     } catch (error) {

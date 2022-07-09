@@ -1,6 +1,6 @@
 //引入所需要的类型
 import { Request,Response,NextFunction } from 'express';
-import { POSTS_PER_PAGE  } from '../app/app.config';
+// 旧分页所用 import { POSTS_PER_PAGE  } from '../app/app.config';
 
 
 /**
@@ -107,26 +107,58 @@ export const sort = async (
 
   };
 
+
+
   /**
-   * 内容分页
+   * 内容分页新
+   * 执行会制造return 出一个分页中间件
    */
-  export const paginate = async (
-      request:　Request,
-      response: Response,
-      next: NextFunction
-    ) => {
-      //当前页码
-      const { page = 1 } = request.query;
 
-      //每页内容数量
-      const limit = parseInt( POSTS_PER_PAGE , 10 ) || 30;
+   export const paginate = ( itemsPerPage: number) => {
 
-      //公式计算出偏移量
-      const offset = limit * ( parseInt(`${page}` ,10 ) - 1 );
+        return async (
+            request:　Request,
+            response: Response,
+            next: NextFunction
+          ) => {
+            //当前页码
+            const { page = 1 } = request.query;
+        
+            //每页内容数量
+            const limit = itemsPerPage || 30;
+        
+            //公式计算出偏移量
+            const offset = limit * ( parseInt(`${page}` ,10 ) - 1 );
+        
+              //设置请求中的分页
+             request.pagination = { limit , offset }; 
+        
+             //next
+             next();
+         };
 
-        //设置请求中的分页
-       request.pagination = { limit , offset }; 
-
-       //next
-       next();
    };
+
+  /**
+   * 内容分页旧
+   */
+//   export const paginate = async (
+//       request:　Request,
+//       response: Response,
+//       next: NextFunction
+//     ) => {
+//       //当前页码
+//       const { page = 1 } = request.query;
+
+//       //每页内容数量
+//       const limit = parseInt( POSTS_PER_PAGE , 10 ) || 30;
+
+//       //公式计算出偏移量
+//       const offset = limit * ( parseInt(`${page}` ,10 ) - 1 );
+
+//         //设置请求中的分页
+//        request.pagination = { limit , offset }; 
+
+//        //next
+//        next();
+//    };
