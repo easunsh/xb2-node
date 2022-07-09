@@ -1,7 +1,8 @@
 //引入所需要的类型
 import { Request,Response,NextFunction } from 'express';
-import { UserModel } from './user.model';
+//import { UserModel } from './user.model';
 import * as userService from './user.service';
+import _ from 'lodash';
 
   /***
      * 
@@ -30,4 +31,65 @@ import * as userService from './user.service';
         next (error);
       }
 
+  };
+
+/**
+ * 显示用户账户
+ */
+export const show = async (
+    request:　Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    //准备数据
+    const { userId } = request.params;
+
+    //调取用户
+    try {
+
+      const user = await userService.getUserById( parseInt( userId,10 ) );
+
+      if( !user ){
+        return next( new Error('USER_NOT_FOUND') );
+      }
+
+      //做出响应
+      response.send( user );
+
+
+    } catch (error) {
+      next( error );
+    }
+ };
+
+
+ /**
+  * 更新用户数据
+  */
+ export const update = async (
+     request:　Request,
+     response: Response,
+     next: NextFunction
+   ) => {
+
+    //data ready
+    const { id } = request.user;
+
+    //选择需要的数据组合给userData
+    const userData = _.pick( request.body.update, ['name','password'] );
+
+    //更新用户
+    try {
+      const data = await userService.updateUser( id , userData );
+
+      //response
+      response.send(data);
+
+
+    } catch(error){
+
+      next( error );
+    }
+
+     
   };
