@@ -53,4 +53,30 @@
 
 	},
 
+	"auto to test in describe" : {
+
+		"prefix" : "autotest" ,
+		"body" : [
+
+			"/**",
+			"* $1",
+			"*/",
+			"describe('$2' , () =>{",
+				"test('$3' , async () => {",
+				"//请求接口",
+				"const response = await request(app)",
+				".post('$4')",
+				".send( $5 );",
+		
+				"//断言",
+				"expect( response.status ).toBe( $6 );",
+				"expect( response.body ).toEqual( $7 );",
+				"});",
+			"});"
+		
+		]
+
+	},
+
+
 }

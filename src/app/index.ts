@@ -10,6 +10,7 @@ import tagRouter from '../tag/tag.router';
 import commentRouter from '../comment/comment.router';
 import avatarRouter from '../avatar/avatar.router';
 import likeRouter from '../like/like.router';
+import appRouter from './app.router';
 
 //导入中间件 默认错误处理器
 import { defaultErrorHandler } from './app.middleware';
@@ -33,6 +34,7 @@ app.use(
      avatarRouter,
      commentRouter,
      likeRouter,
+     appRouter,
 );  
 
 
