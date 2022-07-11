@@ -7,6 +7,7 @@ import { deleteUser , getUserById } from './user.service';
 import { UserModel } from './user.model';
 
 /**
+ * 相当于模拟客户端软件
  * 准备测试
  * 测试的时候会创建一个用户走一下流程
  * testUser就是要创建的测试用户
@@ -86,6 +87,69 @@ describe('测试创建用户接口' , () =>{
            //做出断言
            expect( response.status ).toBe( 201 );
            
+        });
+
+});
+
+
+/**
+* 自动测试用户更新
+*/
+describe('测试更新用户接口' , () =>{
+
+    test('更新用户数据时需要验证用户身份' , async () => {
+    //请求接口
+    const response = await request(app)
+    .patch('/users');
+    //断言
+    expect( response.status ).toBe( 401 );
+
+    });
+
+    test('更新用户数据' , async () => {
+        //签发令牌
+        const token = signToken({
+
+            payload: { 
+                id: testUserCreated.id , 
+                name: testUserCreated.name
+            },
+
+        });
+
+        const response = await request(app)
+        .patch('/users')
+        .set('Authorization' , `Bearer ${token}`)
+        .send({
+            validate: {
+                password: testUser.password,
+            },
+            update: {
+                name: testUserUpdated.name,
+                password: testUserUpdated.password,
+            }
+
+        });
+
+        //调取用户 password: true 读数据库时会把pwd 一起查出来
+        const user = await getUserById( 
+            testUserCreated.id ,
+            { password: true }
+        );
+
+        //对比密码
+        const matched = await bcrypt.compare(
+            testUserUpdated.password,
+            user.password,
+
+        );
+
+        //断言
+        expect( response.status ).toBe( 200 );
+        expect( matched ).toBeTruthy();
+        expect( user.name ).toBe( testUserUpdated.name );
+
+    
         });
 
 });
