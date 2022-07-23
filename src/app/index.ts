@@ -30,22 +30,25 @@ app.use( express.json() );
  * @return  use 应用就包含postRouter中包含的接口
  */
 app.use( 
-    postRouter ,
-     userRouter , 
-     authRouter , 
-     fileRouter , 
-     tagRouter ,
+    postRouter,
+     userRouter, 
+     authRouter, 
+     fileRouter, 
+     tagRouter,
      avatarRouter,
      commentRouter,
      likeRouter,
-     appRouter,
-     cors({
+     appRouter,   
+);  
+
+//跨域
+app.use( 
+    cors({
 		origin: ALLOW_ORIGIN,
 		exposedHeaders: 'X-Total-Count',
 	
 	}),
-);  
-
+ );
 
 
 //开始use 默认异常处理器
