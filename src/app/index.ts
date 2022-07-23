@@ -12,6 +12,10 @@ import avatarRouter from '../avatar/avatar.router';
 import likeRouter from '../like/like.router';
 import appRouter from './app.router';
 
+//跨域
+import cors from 'cors';
+import { ALLOW_ORIGIN } from './app.config';
+
 //导入中间件 默认错误处理器
 import { defaultErrorHandler } from './app.middleware';
 
@@ -35,7 +39,13 @@ app.use(
      commentRouter,
      likeRouter,
      appRouter,
+     cors({
+		origin: ALLOW_ORIGIN,
+		exposedHeaders: 'X-Total-Count',
+	
+	}),
 );  
+
 
 
 //开始use 默认异常处理器

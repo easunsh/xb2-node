@@ -3,6 +3,10 @@ dotenv.config(); //会载入.env这个文件
 
 //应用配置
 export const { APP_PORT } = process.env;
+
+//跨域
+export const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN;
+
 //Mysql
 export const { 
     MYSQL_HOST,
