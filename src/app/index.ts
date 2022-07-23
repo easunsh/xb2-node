@@ -25,6 +25,16 @@ const app = express();
 //开始use  处理JSON
 app.use( express.json() );
 
+//跨域资源共享 ，注意要放在路由的上面，不然就不起作用
+app.use( 
+  cors({
+  origin: ALLOW_ORIGIN,
+  exposedHeaders: 'X-Total-Count',
+
+}),
+);
+
+
 /**
  * 开始use 处理路由
  * @return  use 应用就包含postRouter中包含的接口
@@ -41,14 +51,7 @@ app.use(
      appRouter,   
 );  
 
-//跨域
-app.use( 
-    cors({
-		origin: ALLOW_ORIGIN,
-		exposedHeaders: 'X-Total-Count',
-	
-	}),
- );
+
 
 
 //开始use 默认异常处理器
