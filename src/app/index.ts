@@ -18,44 +18,48 @@ import { ALLOW_ORIGIN } from './app.config';
 
 //导入中间件 默认错误处理器
 import { defaultErrorHandler } from './app.middleware';
+//获得当前用户中间件
+import { currentUser } from '../auth/auth.middleware';
 
 //创建EXPRESS 应用 app
 const app = express();
 
 //开始use  处理JSON
-app.use( express.json() );
+app.use(express.json());
 
 //跨域资源共享 ，注意要放在路由的上面，不然就不起作用
-app.use( 
+app.use(
   cors({
-  origin: ALLOW_ORIGIN,
-  exposedHeaders: 'X-Total-Count',
-
-}),
+    origin: ALLOW_ORIGIN,
+    exposedHeaders: 'X-Total-Count',
+  }),
 );
 
+/**
+ * 获得当前用户的
+ * 全局中间件
+ * 放在路由的上面
+ */
+app.use(currentUser);
 
 /**
  * 开始use 处理路由
  * @return  use 应用就包含postRouter中包含的接口
  */
-app.use( 
-    postRouter,
-     userRouter, 
-     authRouter, 
-     fileRouter, 
-     tagRouter,
-     avatarRouter,
-     commentRouter,
-     likeRouter,
-     appRouter,   
-);  
-
-
-
+app.use(
+  postRouter,
+  userRouter,
+  authRouter,
+  fileRouter,
+  tagRouter,
+  avatarRouter,
+  commentRouter,
+  likeRouter,
+  appRouter,
+);
 
 //开始use 默认异常处理器
-app.use( defaultErrorHandler );
+app.use(defaultErrorHandler);
 
 //导出应用为默认 默认为index
 export default app;
