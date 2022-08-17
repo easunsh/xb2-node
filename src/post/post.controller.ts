@@ -24,7 +24,7 @@ export const index = async (
   response: Response,
   next: NextFunction,
 ) => {
-  console.log('index request user is', request.user);
+  // console.log('index request user is', request.user);
   try {
     //统计内容数量
     const totalCount = await getPostsTotalCount({ filter: request.filter });
@@ -226,7 +226,7 @@ export const showPostById = async (
 
   //调取内容
   try {
-    console.log('showPostById request user is', request.user);
+    //console.log('showPostById request user is', request.user);
     const post = await getPostById(parseInt(postId, 10), {
       currentUser: request.user,
     });
