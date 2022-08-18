@@ -37,7 +37,7 @@
 
 	"Sql Quary in service" : {
 
-		"prefix" : "sqinservice" ,
+		"prefix" : "sqlinservice" ,
 		"body" : [
 
 			"//准备查询",

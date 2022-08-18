@@ -15,6 +15,7 @@ import {
 } from './post.service';
 
 import { tagModel } from '../tag/tag.model';
+import { deletePostFiles, getPostFiles } from '../file/file.service';
 import { getTabByName, createTag } from '../tag/tag.service';
 
 //内容列表
@@ -127,8 +128,17 @@ export const destroy = async (
   //获取请求地址的内容ID
   const { postId } = request.params;
 
-  //删除内容
   try {
+    /**
+     * 删除内容相关文件的方法
+     * 如果有文件，就删除
+     */
+    const files = await getPostFiles(parseInt(postId, 10));
+    if (files.length) {
+      console.log('files.length');
+      await deletePostFiles(files);
+    }
+    //删除内容
     const data = await deletePost(parseInt(postId, 10));
     response.send(data);
   } catch (error) {
