@@ -3,8 +3,7 @@
  * totleComments 评论总数
  */
 export const sqlFragment = {
-
-    user:`
+  user: `
     JSON_OBJECT(
         'id',user.id,
         'name',user.name,
@@ -12,14 +11,14 @@ export const sqlFragment = {
     ) as user
     `,
 
-    leftJoinUser:`
+  leftJoinUser: `
     LEFT JOIN user
         ON user.id = post.userID
     LEFT JOIN avatar
         ON user.id = avatar.userId
     `,
 
-    totalComments:`
+  totalComments: `
     (
         SELECT
         COUNT(comment.id)
@@ -30,7 +29,7 @@ export const sqlFragment = {
     ) as totalComments
     `,
 
-    leftJoinOneFile: `
+  leftJoinOneFile: `
         LEFT JOIN LATERAL (
             SELECT *
             FROM file
@@ -40,7 +39,15 @@ export const sqlFragment = {
         ) AS file 
         ON post.id = file.postId
     `,
-    innerJoinOneFile: `
+  innerJoinFile: `
+        INNER JOIN file
+        ON file.postId = post.id
+    `,
+  leftJoinFile: `
+    LEFT JOIN file
+    ON file.postId = post.id
+`,
+  innerJoinOneFile: `
     INNER JOIN LATERAL (
         SELECT *
         FROM file
@@ -51,7 +58,7 @@ export const sqlFragment = {
     ON post.id = file.postId
 `,
 
-    file: `
+  file: `
           CAST(
             IF(
                 COUNT(file.id),
@@ -67,7 +74,7 @@ export const sqlFragment = {
           )  AS file
     `,
 
-    leftJoinTag:`
+  leftJoinTag: `
            LEFT JOIN
               post_tag ON post_tag.postId = post.id
             LEFT JOIN
@@ -75,7 +82,7 @@ export const sqlFragment = {
     
     `,
 
-    tags:`
+  tags: `
         CAST(
 
             IF(
@@ -95,7 +102,7 @@ export const sqlFragment = {
         ) AS tags
     `,
 
-    totalLikes:`
+  totalLikes: `
         (
             SELECT COUNT(user_like_post.postId)
             FROM user_like_post
@@ -103,10 +110,8 @@ export const sqlFragment = {
         ) AS totalLikes          
     `,
 
-    innerJoinUserLikePost:`
+  innerJoinUserLikePost: `
         INNER JOIN user_like_post
          ON user_like_post.postId = post.id
     `,
-
-
 };
