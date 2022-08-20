@@ -23,6 +23,18 @@ export const socketIoServer = new Server(httpServer, {
 });
 
 /**
+ * 监听客户端的事件
+ * data就是客户端来的数据
+ * 建立连接就会互通数据
+ */
+socketIoServer.on('connect', socket => {
+  //事件名和数据
+  socket.on('greet', data => {
+    console.log(data);
+  });
+});
+
+/**
  * 默认导出
  */
 export default httpServer;
