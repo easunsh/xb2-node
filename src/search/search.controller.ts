@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { searchTags, searchUsers } from './search.service';
+import {
+  searchCameras,
+  searchTags,
+  searchUsers,
+  searchLens,
+} from './search.service';
 
 /**
  * 搜索标签
@@ -40,6 +45,40 @@ export const users = async (
 
     //做出响应
     response.send(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 查询相机
+ */
+export const cameras = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { makeModel } = request.query;
+    const cameras = await searchCameras({ makeModel: `${makeModel}` });
+    response.send(cameras);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 查询镜头
+ */
+export const lens = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { makeModel } = request.query;
+    const lens = await searchLens({ makeModel: `${makeModel}` });
+    response.send(lens);
   } catch (error) {
     next(error);
   }
