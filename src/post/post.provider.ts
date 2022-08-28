@@ -74,12 +74,31 @@ export const sqlFragment = {
           )  AS file
     `,
 
+  fileInfo: `
+  CAST(
+    IF(
+      COUNT(file.id),
+      CONCAT(
+        '[',
+            GROUP_CONCAT(
+              DISTINCT JSON_OBJECT(
+                'id',file.id,   
+                'upName',file.originalname,
+                'fileType',file.mimetype
+                )
+            ),
+        ']'
+      ),
+        NULL
+    ) AS JSON
+  ) as fileInfo
+`,
+
   leftJoinTag: `
            LEFT JOIN
               post_tag ON post_tag.postId = post.id
             LEFT JOIN
-              tag ON post_tag.tagId = tag.id               
-    
+              tag ON post_tag.tagId = tag.id 
     `,
 
   tags: `

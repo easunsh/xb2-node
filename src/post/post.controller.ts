@@ -33,6 +33,7 @@ export const index = async (
     //将 统计内容数量 设置响应头部 返回给客户端
     response.header('X-Total-Count', totalCount);
   } catch (error) {
+    console.log('getPostsTotalCount error is ===', error);
     next(error);
   }
 

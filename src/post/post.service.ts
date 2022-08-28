@@ -9,6 +9,7 @@ import { sqlFragment } from './post.provider';
  * @returns
  */
 /**
+ * filter参数interface
  * sql中的 where 条件
  * 	name 是过滤器的名字
  *  sql 是sql语句,包含占位符
@@ -19,10 +20,11 @@ export interface GetPostsOptionsFilter {
   name: string;
   sql?: string;
   param?: string;
+  params?: Array<string>;
 }
 
 /**
- * 分页
+ * 分页参数接口
  * limit 当前页展示几条
  * offset 偏移量
  */
@@ -32,6 +34,8 @@ export interface GetPostOptionsPagination {
 }
 
 /**
+ * 参数总接口interface
+ * 接入各子接口数据汇总给各方法
  * sql中的所需
  * sort 排序
  * filter 过滤地址栏参数做判断
@@ -66,10 +70,17 @@ export const getPosts = async (options: GetPostsOptions) => {
   if (filter.param) {
     params = [filter.param, ...params];
   }
+  //相机过滤信息的
+  if (filter.params) {
+    params = [...filter.params, ...params];
+  }
+
+  console.log('camrea filter.sql is ----', filter.sql);
+  console.log('params is ----', params);
 
   //当前用户
   const { id: userId } = currentUser;
-  console.log(userId);
+  console.log('user id is ', userId);
 
   //JSON_OBJECT 组织一个JSON对象 as 个名字user
   const statement = `
@@ -79,7 +90,7 @@ export const getPosts = async (options: GetPostsOptions) => {
 		post.content,
 		${sqlFragment.user},
 		${sqlFragment.totalComments},
-		${sqlFragment.file},
+		${sqlFragment.fileInfo},
 		${sqlFragment.tags},
 		${sqlFragment.totalLikes},
 		(
@@ -91,7 +102,7 @@ export const getPosts = async (options: GetPostsOptions) => {
 		) as liked
 	FROM post
 	  ${sqlFragment.leftJoinUser}
-	  ${sqlFragment.leftJoinOneFile}
+	  ${sqlFragment.leftJoinFile}
 	  ${sqlFragment.leftJoinTag}
 	  ${filter.name == 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
 	  WHERE ${filter.sql}
@@ -104,6 +115,7 @@ export const getPosts = async (options: GetPostsOptions) => {
   //用connection的方法，返回结果是个数组，
   //需要第一个项目是我们需要的数据 ，用await等待执行，函数需要标记为async
   //params 为占位符的具体值
+
   const [data] = await connection.promise().query(statement, params);
 
   return data;
@@ -235,6 +247,10 @@ export const getPostsTotalCount = async (options: GetPostsOptions) => {
 
   //sql 参数
   let params = [filter.param];
+  //sql 相机还有镜头的
+  if (filter.params) {
+    params = [...filter.params, ...params];
+  }
 
   //准备查询
   const statement = `
@@ -283,7 +299,7 @@ export const getPostById = async (
 				post.content,
 				${sqlFragment.user},
 				${sqlFragment.totalComments},
-				${sqlFragment.file},
+				${sqlFragment.fileInfo},
 				${sqlFragment.tags}, 
 				${sqlFragment.totalLikes},
 				(
@@ -295,7 +311,7 @@ export const getPostById = async (
 				) as liked
 			FROM post
 				${sqlFragment.leftJoinUser}
-				${sqlFragment.leftJoinOneFile}
+				${sqlFragment.leftJoinFile}
 				${sqlFragment.leftJoinTag}
 			WHERE post.id = ?
 		`;
