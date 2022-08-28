@@ -26,14 +26,19 @@ export const index = async (
   next: NextFunction,
 ) => {
   // console.log('index request user is', request.user);
+
+  //解构查询符
+  const { status = '' } = request.query;
   try {
     //统计内容数量
-    const totalCount = await getPostsTotalCount({ filter: request.filter });
+    const totalCount = await getPostsTotalCount({
+      filter: request.filter,
+      status: status as any,
+    });
 
     //将 统计内容数量 设置响应头部 返回给客户端
     response.header('X-Total-Count', totalCount);
   } catch (error) {
-    console.log('getPostsTotalCount error is ===', error);
     next(error);
   }
 
@@ -46,6 +51,7 @@ export const index = async (
       filter: request.filter,
       pagination: request.pagination,
       currentUser: request.user,
+      status: status as any,
     });
 
     response.send(posts);
