@@ -40,9 +40,9 @@ export interface GetPostOptionsPagination {
  * archived,存档
  */
 export enum PostStatus {
-  published,
-  draft,
-  archived,
+  published = 'published',
+  draft = 'draft',
+  archived = 'archived',
 }
 
 /**

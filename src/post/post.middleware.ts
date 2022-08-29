@@ -1,5 +1,6 @@
 //引入所需要的类型
 import { Request, Response, NextFunction } from 'express';
+import { PostStatus } from './post.service';
 // 旧分页所用 import { POSTS_PER_PAGE  } from '../app/app.config';
 
 /**
@@ -165,6 +166,46 @@ export const validatePostStatus = async (
   } else {
     next();
   }
+};
+
+/**
+ * 管理员模式切换
+ */
+export const modeSwitcher = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  //解构查询符
+  let { manage, admin } = request.query;
+
+  //用户管理模式 等于true表示用户管理模式,把manage给到isManageMode
+  const isManageMode = manage === 'true';
+
+  //超管模式,满足3条件触发，用户管理模式+超管模式+超管token
+  const isAdminMode = isManageMode && admin === 'true' && request.user.id === 1;
+
+  if (isManageMode) {
+    //用户管理模式继续做判断，是否是超管模式
+    if (isAdminMode) {
+      request.filter = {
+        name: 'adminManagePosts',
+        sql: 'post.id IS NOT NULL',
+        param: '',
+      };
+    } else {
+      request.filter = {
+        name: 'userManagePosts',
+        sql: 'user.id = ?',
+        param: `${request.user.id}`,
+      };
+    }
+  } else {
+    //默认都是published，发布给所有人看的
+    request.query.status = PostStatus.published;
+  }
+  //下一步
+  next();
 };
 
 /**
