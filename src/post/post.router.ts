@@ -5,7 +5,7 @@ import * as postController from './post.controller';
 //import { requestUrl } from '../app/app.middleware';
 
 //排序、条件查询 ,分页
-import { sort, filter, paginate } from './post.middleware';
+import { sort, filter, paginate, validatePostStatus } from './post.middleware';
 
 //验证用户身份
 import { authCuard, accessControl } from '../auth/auth.middleware';
@@ -35,6 +35,7 @@ router.get(
   sort,
   filter,
   paginate(POSTS_PER_PAGE),
+  validatePostStatus,
   postController.index,
 );
 
