@@ -160,7 +160,7 @@ export const validatePostStatus = async (
   const { status: statusFromBody = '' } = request.body;
 
   const status = statusFromQuery || statusFromBody;
-  console.log('--------------', status);
+
   //检查内容状态是否有效
   const isValidStatus = ['published', 'draft', 'archived', ''].includes(
     `${status}`,
