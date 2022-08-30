@@ -49,7 +49,7 @@ router.get(
 /**
  * 创建内容
  */
-router.post('/posts', authCuard, postController.store);
+router.post('/posts', authCuard, validatePostStatus, postController.store);
 
 /**
  * 更新内容 定义支持HTTP patch 更新接口
@@ -61,6 +61,7 @@ router.patch(
   '/posts/:postId',
   authCuard,
   accessControl({ possession: true }),
+  validatePostStatus,
   postController.update,
 );
 

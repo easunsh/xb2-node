@@ -12,11 +12,13 @@ import {
   deletePostTag,
   getPostsTotalCount,
   getPostById,
+  PostStatus,
 } from './post.service';
 
 import { tagModel } from '../tag/tag.model';
 import { deletePostFiles, getPostFiles } from '../file/file.service';
 import { getTabByName, createTag } from '../tag/tag.service';
+import { PostModel } from './post.model';
 
 //内容列表
 export const index = async (
@@ -81,15 +83,22 @@ export const store = async (
   next: NextFunction,
 ) => {
   //准备需要存储的数据 ，从请求的主体json中解构出来，
-  const { title, content } = request.body;
+  const { title, content, status = PostStatus.draft } = request.body;
 
   //解构扩展出来的request.user 里的ID ，重命名为userid
   const { id: userId } = request.user;
 
+  const post: PostModel = {
+    title,
+    content,
+    userId,
+    status,
+  };
+
   //创建内容
   try {
     //将需要存储的内容交给函数
-    const data = await createPost({ title, content, userId });
+    const data = await createPost(post);
     //做出一个响应
     response.status(201).send(data);
   } catch (error) {
@@ -111,7 +120,7 @@ export const update = async (
 
   //准备要更新的数据 更新title 会给CONTENT赋值NULL  会用LODASH改造
   //const { title, content } = request.body;
-  const post = _.pick(request.body, ['title', 'content']);
+  const post = _.pick(request.body, ['title', 'content', 'status']);
 
   //执行更新
   try {
