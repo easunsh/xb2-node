@@ -95,6 +95,9 @@ export const defaultErrorHandler = (
     case 'BAD_REQUEST':
       statusCode = 400;
       message = '无法处您的请求';
+    case 'FORBIDDEN':
+      statusCode = 403;
+      message = '没有权限访问';
       break;
 
     default:

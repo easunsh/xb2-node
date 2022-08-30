@@ -249,14 +249,24 @@ export const showPostById = async (
 ) => {
   //准备数据
   const { postId } = request.params;
+  const { user: currentUser } = request;
 
   //调取内容
   try {
     //console.log('showPostById request user is', request.user);
     const post = await getPostById(parseInt(postId, 10), {
-      currentUser: request.user,
+      currentUser,
     });
 
+    //检查权限，用户自己发布的，或超管，或公开的true or false
+    const ownPost = post.user.id === currentUser.id;
+    const isAdmin = currentUser.id === 1;
+    const isPublished = post.status === PostStatus.published;
+    const canAccess = ownPost || isAdmin || isPublished;
+
+    if (!canAccess) {
+      throw new Error('FORBIDDEN');
+    }
     //做出响应
     response.send(post);
   } catch (error) {

@@ -89,9 +89,6 @@ export const getPosts = async (options: GetPostsOptions) => {
     params = [...filter.params, ...params];
   }
 
-  console.log('camrea filter.sql is ----', filter.sql);
-  console.log('params is ----', params);
-
   //当前用户
   const { id: userId } = currentUser;
   console.log('user id is ', userId);
@@ -100,8 +97,6 @@ export const getPosts = async (options: GetPostsOptions) => {
   const whereStatus = status
     ? `post.status = '${status}'`
     : 'post.status IS NOT NULL';
-
-  console.log('whereStatus is --', whereStatus);
 
   //JSON_OBJECT 组织一个JSON对象 as 个名字user
   const statement = `
@@ -316,14 +311,14 @@ export const getPostById = async (
   const {
     currentUser: { id: userId },
   } = options;
-  console.log('optionsis', options);
-  console.log('byidis', userId);
+
   //sql ready
   const statement = `
 			SELECT 
 				post.id,
 				post.title,
 				post.content,
+        post.status,
 				${sqlFragment.user},
 				${sqlFragment.totalComments},
 				${sqlFragment.fileInfo},
@@ -340,7 +335,7 @@ export const getPostById = async (
 				${sqlFragment.leftJoinUser}
 				${sqlFragment.leftJoinFile}
 				${sqlFragment.leftJoinTag}
-			WHERE post.id = ?
+			WHERE post.id = ? 
 		`;
 
   //执行查询
