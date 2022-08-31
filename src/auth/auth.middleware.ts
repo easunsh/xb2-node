@@ -69,7 +69,6 @@ export const currentUser = (
   response: Response,
   next: NextFunction,
 ) => {
-  console.log('识别当前用户currentUser中间件');
   let user: TokenPayload = {
     id: null,
     name: 'anonymous',
@@ -104,7 +103,7 @@ export const currentUser = (
    * 在请求里添加当前用户
    * 应用在全局
    */
-
+  console.log('now user is ---', user);
   request.user = user;
 
   //下一步

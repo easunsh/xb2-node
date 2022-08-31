@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import _ from 'lodash';
-import { createFile, findFileById } from './file.service';
+import { createFile, fileAccessControl, findFileById } from './file.service';
 import path from 'path';
 import fs from 'fs'; //nodejs 自带的FS
 
@@ -59,9 +59,15 @@ export const serve = async (
   //从地址参数中取得文件ID
   const { fileId } = request.params;
 
+  //当前用户
+  const { user: currentUser } = request;
+
   try {
     //查找文件信息
     const file = await findFileById(parseInt(fileId, 10));
+
+    //检查权限
+    await fileAccessControl({ file, currentUser });
 
     /**如果
      * 要提供不同尺寸的图片
@@ -131,10 +137,15 @@ export const metadata = async (
 ) => {
   //文件的id
   const { fileId } = request.params;
+  //当前用户
+  const { user: currentUser } = request;
 
   try {
     //查询文件数据
     const file = await findFileById(parseInt(fileId, 10));
+
+    //检查权限
+    await fileAccessControl({ file, currentUser });
 
     //准备响应数据 , 重新组织一下
     const data = _.pick(file, ['id', 'size', 'width', 'height', 'metadata']);

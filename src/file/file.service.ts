@@ -4,6 +4,8 @@ import path from 'path'; //组织一个文件路径
 import Jimp from 'jimp';
 import { sqlFragment } from 'src/post/post.provider';
 import fs from 'fs';
+import { TokenPayload } from '../auth/auth.interface';
+import { getPostById, PostStatus } from '../post/post.service';
 
 /**
  * 存储文件信息
@@ -132,4 +134,27 @@ export const deletePostFiles = async (files: Array<FileModel>) => {
       });
     });
   });
+};
+
+/**
+ * 检查文件权限
+ */
+interface FileAccessControlOptions {
+  file: FileModel;
+  currentUser: TokenPayload;
+}
+
+export const fileAccessControl = async (options: FileAccessControlOptions) => {
+  const { file, currentUser } = options;
+  const ownFile = file.userId === currentUser.id;
+
+  const isAdmin = currentUser.id === 1;
+  const parentPost = await getPostById(file.postId, { currentUser });
+  const isPublished = parentPost.status === PostStatus.published;
+  const canAccess = ownFile || isAdmin || isPublished;
+  //console.log('canAccess---', canAccess);
+
+  if (!canAccess) {
+    throw new Error('FORBIDDEN');
+  }
 };
