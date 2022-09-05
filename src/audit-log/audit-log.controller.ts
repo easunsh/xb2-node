@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { createAuditLog, deleteAuditLog } from './audit-log.service';
+import { AuditLogStatus } from './audit-log.model';
+import {
+  createAuditLog,
+  deleteAuditLog,
+  getAuditLogByResource,
+} from './audit-log.service';
 
 /**
  * 创建审核日志
@@ -38,4 +43,39 @@ export const deleteAuditLogControl = async (
   }
 
   next();
+};
+
+/**
+ * 取消审核
+ */
+export const revoke = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { resourceId, resourceType } = request.body;
+  const { id: userId } = request.user;
+
+  try {
+    //最近的审核日志记录
+    const [auditLog] = await getAuditLogByResource({
+      resourceId,
+      resourceType,
+    });
+    //满足取消审核条件的话
+    const canRevokeAudit =
+      auditLog &&
+      auditLog.status === AuditLogStatus.pending &&
+      auditLog.userId === userId;
+
+    if (canRevokeAudit) {
+      await deleteAuditLog(auditLog.id);
+    } else {
+      throw new Error('BAD_REQUEST');
+    }
+
+    response.send({ message: '成功取消审核' });
+  } catch (error) {
+    next(error);
+  }
 };

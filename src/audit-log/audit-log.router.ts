@@ -12,6 +12,7 @@ router.post('/audit-logs', authCuard, auditLogGuard, auditLogController.store);
 
 /**
  * 删除审核日志
+ * 自己写着玩的
  */
 router.delete(
   '/audit-logs/:logId',
@@ -19,6 +20,11 @@ router.delete(
   deleteAuditLogGuard,
   auditLogController.deleteAuditLogControl,
 );
+
+/**
+ * 取消审核日志的提交
+ */
+router.post('/revoke-audit', authCuard, auditLogController.revoke);
 
 /**
  * 导出路由

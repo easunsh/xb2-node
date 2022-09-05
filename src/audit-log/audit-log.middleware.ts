@@ -73,6 +73,7 @@ export const auditLogGuard = async (
 
 /**
  * 删除日志守卫
+ * 自己写着玩的
  */
 export const deleteAuditLogGuard = async (
   request: Request,
