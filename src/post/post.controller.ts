@@ -30,12 +30,14 @@ export const index = async (
   // console.log('index request user is', request.user);
 
   //解构查询符
-  const { status = '' } = request.query;
+  const { status = '', auditStatus } = request.query;
+  console.log('controll status is ', auditStatus);
   try {
     //统计内容数量
     const totalCount = await getPostsTotalCount({
       filter: request.filter,
       status: status as any,
+      auditStatus: auditStatus as any,
     });
 
     //将 统计内容数量 设置响应头部 返回给客户端
@@ -54,6 +56,7 @@ export const index = async (
       pagination: request.pagination,
       currentUser: request.user,
       status: status as any,
+      auditStatus: auditStatus as any,
     });
 
     response.send(posts);

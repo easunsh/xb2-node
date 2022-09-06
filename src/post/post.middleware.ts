@@ -1,5 +1,6 @@
 //引入所需要的类型
 import { Request, Response, NextFunction } from 'express';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 import { PostStatus } from './post.service';
 // 旧分页所用 import { POSTS_PER_PAGE  } from '../app/app.config';
 
@@ -158,7 +159,7 @@ export const validatePostStatus = async (
   //解构出来取个别名
   const { status: statusFromQuery = '' } = request.query;
   const { status: statusFromBody = '' } = request.body;
-
+  console.log('status ---1 ', statusFromQuery);
   const status = statusFromQuery || statusFromBody;
 
   //检查内容状态是否有效
@@ -208,6 +209,7 @@ export const modeSwitcher = async (
   } else {
     //默认都是published，发布给所有人看的
     request.query.status = PostStatus.published;
+    request.query.auditStatus = AuditLogStatus.approved;
   }
   //下一步
   next();

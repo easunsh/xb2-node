@@ -57,6 +57,10 @@ export const sqlFragment = {
     ) AS file 
     ON post.id = file.postId
 `,
+  leftJoinAuditLog: `
+  LEFT JOIN audit_log as auditLog
+  ON auditLog.resourceId = post.id
+`,
 
   file: `
           CAST(
@@ -92,6 +96,27 @@ export const sqlFragment = {
         NULL
     ) AS JSON
   ) as fileInfo
+`,
+
+  auditLog: `
+  CAST(
+    IF(
+      COUNT(auditLog.id),
+      CONCAT(
+        '[',
+            GROUP_CONCAT(
+              DISTINCT JSON_OBJECT(
+                'id',auditLog.id,   
+                'userName',auditLog.userName,
+                'resType',auditLog.resourceType,
+                'status',auditLog.status
+                )
+            ),
+        ']'
+      ),
+        NULL
+    ) AS JSON
+  ) as auditLog
 `,
 
   leftJoinTag: `

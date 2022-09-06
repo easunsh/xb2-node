@@ -2,6 +2,7 @@ import { TokenPayload } from '../auth/auth.interface';
 import { connection } from '../app/database/mysql'; //数据库连接
 import { PostModel } from './post.model';
 import { sqlFragment } from './post.provider';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 
 /**
  * 获取内容列表
@@ -60,6 +61,7 @@ interface GetPostsOptions {
   pagination?: GetPostOptionsPagination;
   currentUser?: TokenPayload;
   status?: PostStatus;
+  auditStatus?: AuditLogStatus;
 }
 
 /**
@@ -76,6 +78,7 @@ export const getPosts = async (options: GetPostsOptions) => {
     pagination: { limit, offset },
     currentUser,
     status,
+    auditStatus,
   } = options;
 
   //sql 执行查询给sql占位符提供的值
@@ -91,12 +94,16 @@ export const getPosts = async (options: GetPostsOptions) => {
 
   //当前用户
   const { id: userId } = currentUser;
-  console.log('user id is ', userId);
 
   //发布状态,没有提供就查询所有状态
   const whereStatus = status
     ? `post.status = '${status}'`
     : 'post.status IS NOT NULL';
+
+  //内容审核状态
+  const whereAuditStatus = auditStatus
+    ? `AND auditLog.status='${auditStatus}'`
+    : '';
 
   //JSON_OBJECT 组织一个JSON对象 as 个名字user
   const statement = `
@@ -110,6 +117,7 @@ export const getPosts = async (options: GetPostsOptions) => {
 		${sqlFragment.fileInfo},
 		${sqlFragment.tags},
 		${sqlFragment.totalLikes},
+    ${sqlFragment.auditLog},
 		(
 			SELECT COUNT(user_like_post.postId)
 			FROM user_like_post
@@ -121,8 +129,9 @@ export const getPosts = async (options: GetPostsOptions) => {
 	  ${sqlFragment.leftJoinUser}
 	  ${sqlFragment.leftJoinFile}
 	  ${sqlFragment.leftJoinTag}
+    ${sqlFragment.leftJoinAuditLog}
 	  ${filter.name == 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
-	  WHERE ${filter.sql} AND ${whereStatus}
+	  WHERE ${filter.sql} AND ${whereStatus} ${whereAuditStatus}
 	  GROUP BY post.id
 	  ORDER BY ${sort}
 	  LIMIT ?
@@ -260,7 +269,7 @@ export const deletePostTag = async (postId: number, tagId: number) => {
  * 统计内容数量 给客户端
  */
 export const getPostsTotalCount = async (options: GetPostsOptions) => {
-  const { filter, status } = options;
+  const { filter, status, auditStatus } = options;
 
   //sql 参数
   let params = [filter.param];
@@ -274,6 +283,11 @@ export const getPostsTotalCount = async (options: GetPostsOptions) => {
     ? `post.status = '${status}'`
     : 'post.status IS NOT NULL';
 
+  //内容审核状态
+  const whereAuditStatus = auditStatus
+    ? `AND auditLog.status='${auditStatus}'`
+    : '';
+
   //准备查询
   const statement = `
 			SELECT
@@ -282,8 +296,9 @@ export const getPostsTotalCount = async (options: GetPostsOptions) => {
 			 ${sqlFragment.leftJoinUser}
 			 ${sqlFragment.leftJoinFile}
 			 ${sqlFragment.leftJoinTag}
+       ${sqlFragment.leftJoinAuditLog}
 			 ${filter.name == 'userLiked' ? sqlFragment.innerJoinUserLikePost : ''}
-			 WHERE ${filter.sql} AND ${whereStatus}
+			 WHERE ${filter.sql} AND ${whereStatus} ${whereAuditStatus}
 		`;
 
   //执行查询
