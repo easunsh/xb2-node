@@ -314,6 +314,8 @@ export const getPostsTotalCount = async (options: GetPostsOptions) => {
 
 export interface GetPostByIdOptions {
   currentUser?: TokenPayload;
+  status?: PostStatus;
+  auditStatus?: AuditLogStatus;
 }
 export const getPostById = async (
   postId: number,
@@ -325,7 +327,20 @@ export const getPostById = async (
    */
   const {
     currentUser: { id: userId },
+    status: status,
+    auditStatus: auditStatus,
   } = options;
+
+  //发布状态,没有提供就查询所有状态
+  const whereStatus = status
+    ? `post.status = '${status}'`
+    : 'post.status IS NOT NULL';
+
+  //内容审核状态
+
+  const whereAuditStatus = auditStatus
+    ? `AND auditLog.status='${auditStatus}'`
+    : '';
 
   //sql ready
   const statement = `
@@ -339,6 +354,7 @@ export const getPostById = async (
 				${sqlFragment.fileInfo},
 				${sqlFragment.tags}, 
 				${sqlFragment.totalLikes},
+        ${sqlFragment.auditLog},
 				(
 					SELECT COUNT(user_like_post.postId)
 					FROM user_like_post
@@ -350,7 +366,8 @@ export const getPostById = async (
 				${sqlFragment.leftJoinUser}
 				${sqlFragment.leftJoinFile}
 				${sqlFragment.leftJoinTag}
-			WHERE post.id = ? 
+        ${sqlFragment.leftJoinAuditLog}
+			WHERE post.id = ?  AND  ${whereStatus} ${whereAuditStatus}
 		`;
 
   //执行查询
