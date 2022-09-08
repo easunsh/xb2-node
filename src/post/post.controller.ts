@@ -19,6 +19,8 @@ import { tagModel } from '../tag/tag.model';
 import { deletePostFiles, getPostFiles } from '../file/file.service';
 import { getTabByName, createTag } from '../tag/tag.service';
 import { PostModel } from './post.model';
+import { getAuditLogByResource } from '../audit-log/audit-log.service';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 
 //内容列表
 export const index = async (
@@ -261,11 +263,19 @@ export const showPostById = async (
       currentUser,
     });
 
+    //看一下是否有审核日志
+    const [auditLog] = await getAuditLogByResource({
+      resourceId: parseInt(postId, 10),
+      resourceType: 'post',
+    });
+
+    console.log(auditLog);
     //检查权限，用户自己发布的，或超管，或公开的true or false
     const ownPost = post.user.id === currentUser.id;
     const isAdmin = currentUser.id === 1;
     const isPublished = post.status === PostStatus.published;
-    const canAccess = ownPost || isAdmin || isPublished;
+    const isApproved = auditLog && auditLog.status === AuditLogStatus.approved;
+    const canAccess = ownPost || isAdmin || (isPublished && isApproved);
 
     if (!canAccess) {
       throw new Error('FORBIDDEN');
