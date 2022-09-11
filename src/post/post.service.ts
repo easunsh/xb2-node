@@ -328,8 +328,8 @@ export const getPostById = async (
    */
   const {
     currentUser: { id: userId },
-    status: status,
-    auditStatus: auditStatus,
+    status,
+    auditStatus,
   } = options;
 
   //发布状态,没有提供就查询所有状态
