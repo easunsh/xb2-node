@@ -155,8 +155,6 @@ export const fileAccessControl = async (options: FileAccessControlOptions) => {
     resourceType: 'post',
   });
 
-  console.log(parentPostAuditLog);
-
   const isApproved =
     parentPostAuditLog && parentPostAuditLog.status === AuditLogStatus.approved;
 
