@@ -264,7 +264,7 @@ export const showPostById = async (
       currentUser,
     });
 
-    //看一下是否有审核日志
+    //看一下这个post是否有审核日志，以及审核日志的状态
     const [auditLog] = await getAuditLogByResource({
       resourceId: parseInt(postId, 10),
       resourceType: 'post',

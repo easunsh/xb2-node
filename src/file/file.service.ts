@@ -2,10 +2,11 @@ import { connection } from '../app/database/mysql';
 import { FileModel } from './file.model';
 import path from 'path'; //组织一个文件路径
 import Jimp from 'jimp';
-import { sqlFragment } from 'src/post/post.provider';
 import fs from 'fs';
 import { TokenPayload } from '../auth/auth.interface';
 import { getPostById, PostStatus } from '../post/post.service';
+import { getAuditLogByResource } from '../audit-log/audit-log.service';
+import { AuditLogStatus } from '../audit-log/audit-log.model';
 
 /**
  * 存储文件信息
@@ -148,10 +149,23 @@ export const fileAccessControl = async (options: FileAccessControlOptions) => {
   const { file, currentUser } = options;
   const ownFile = file.userId === currentUser.id;
 
+  //看一下与这个文件相关的post是否有审核日志，以及审核日志的状态
+  const [parentPostAuditLog] = await getAuditLogByResource({
+    resourceId: file.postId,
+    resourceType: 'post',
+  });
+
+  console.log(parentPostAuditLog);
+
+  const isApproved =
+    parentPostAuditLog && parentPostAuditLog.status === AuditLogStatus.approved;
+
+  console.log('file isApproved ', isApproved);
+
   const isAdmin = currentUser.id === 1;
   const parentPost = await getPostById(file.postId, { currentUser });
   const isPublished = parentPost.status === PostStatus.published;
-  const canAccess = ownFile || isAdmin || isPublished;
+  const canAccess = ownFile || isAdmin || (isPublished && isApproved);
   //console.log('canAccess---', canAccess);
 
   if (!canAccess) {
