@@ -58,7 +58,7 @@ export const sqlFragment = {
     ON post.id = file.postId
 `,
   leftJoinAuditLog: `
-  INNER JOIN LATERAL (
+  LEFT JOIN LATERAL (
     SELECT *
     FROM audit_log
     WHERE audit_log.resourceId = post.id

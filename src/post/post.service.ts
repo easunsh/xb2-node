@@ -100,11 +100,12 @@ export const getPosts = async (options: GetPostsOptions) => {
     ? `post.status = '${status}'`
     : 'post.status IS NOT NULL';
 
+  console.log('whereStatus -- ', whereStatus);
   //内容审核状态
   const whereAuditStatus = auditStatus
     ? `AND auditLog.status='${auditStatus}'`
     : '';
-
+  console.log('whereAuditStatus -- ', whereAuditStatus);
   //JSON_OBJECT 组织一个JSON对象 as 个名字user
   const statement = `
 	SELECT 

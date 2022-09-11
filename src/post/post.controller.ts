@@ -33,7 +33,8 @@ export const index = async (
 
   //解构查询符
   const { status = '', auditStatus } = request.query;
-  console.log('controll status is ', auditStatus);
+  console.log('control  status is ', status);
+  console.log('control auditStatus status is ', auditStatus);
   try {
     //统计内容数量
     const totalCount = await getPostsTotalCount({
