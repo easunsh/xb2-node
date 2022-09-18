@@ -15,6 +15,8 @@ import {
 
 //验证用户身份
 import { authCuard, accessControl } from '../auth/auth.middleware';
+//access-log
+import { accessLog } from '../access-log/access-log.middleware';
 //分页数据配置文件
 import { POSTS_PER_PAGE } from '../app/app.config';
 
@@ -43,13 +45,24 @@ router.get(
   paginate(POSTS_PER_PAGE),
   validatePostStatus,
   modeSwitcher,
+  accessLog({ action: 'getPosts', resourceType: 'post' }),
   postController.index,
 );
 
 /**
  * 创建内容
  */
-router.post('/posts', authCuard, validatePostStatus, postController.store);
+router.post(
+  '/posts',
+  authCuard,
+  validatePostStatus,
+  accessLog({
+    action: 'createPosts',
+    resourceType: 'post',
+    payloadParam: 'body.title',
+  }),
+  postController.store,
+);
 
 /**
  * 更新内容 定义支持HTTP patch 更新接口
@@ -62,6 +75,11 @@ router.patch(
   authCuard,
   accessControl({ possession: true }),
   validatePostStatus,
+  accessLog({
+    action: 'updatePosts',
+    resourceType: 'post',
+    resourceParamName: 'postId',
+  }),
   postController.update,
 );
 
@@ -75,6 +93,11 @@ router.delete(
   '/posts/:postId',
   authCuard,
   accessControl({ possession: true }),
+  accessLog({
+    action: 'deletePosts',
+    resourceType: 'post',
+    resourceParamName: 'postId',
+  }),
   postController.destroy,
 );
 
@@ -85,6 +108,12 @@ router.post(
   '/posts/:postId/tag',
   authCuard,
   accessControl({ possession: true }),
+  accessLog({
+    action: 'createPostTag',
+    resourceType: 'post',
+    resourceParamName: 'postId',
+    payloadParam: 'body.name',
+  }),
   postController.storePostTag,
 );
 

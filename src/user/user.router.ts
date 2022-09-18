@@ -1,33 +1,26 @@
 import express from 'express';
 import * as userControlle from './user.controller';
-import { 
-    validateUserData, 
-    hashPassword,
-    validateUpdateUserData,
+import {
+  validateUserData,
+  hashPassword,
+  validateUpdateUserData,
 } from './user.middleware';
 
 import { authCuard } from '../auth/auth.middleware';
+//access-log
+import { accessLog } from '../access-log/access-log.middleware';
 
 const router = express.Router();
 
 /**
  * 创建用户
  */
- router.post(
-    '/users', 
-    validateUserData , 
-    hashPassword , 
-    userControlle.store 
-);
+router.post('/users', validateUserData, hashPassword, userControlle.store);
 
- /**
-  * 显示用户账户
-  */
- router.get(
-    '/users/:userId',
-    userControlle.show
-    );
-
+/**
+ * 显示用户账户
+ */
+router.get('/users/:userId', userControlle.show);
 
 /**
  * 更新用户信息
@@ -35,10 +28,15 @@ const router = express.Router();
  */
 
 router.patch(
-    '/users',
-    authCuard,
-    validateUpdateUserData,
-    userControlle.update
+  '/users',
+  authCuard,
+  validateUpdateUserData,
+  accessLog({
+    action: 'updateUser',
+    resourceType: 'user',
+    payloadParam: 'body.update.name',
+  }),
+  userControlle.update,
 );
 
 /**
