@@ -12,7 +12,10 @@ import avatarRouter from '../avatar/avatar.router';
 import likeRouter from '../like/like.router';
 import appRouter from './app.router';
 import searchRouter from '../search/search.router';
+//接口操作日志
 import auditLogRouter from '../audit-log/audit-log.router';
+//访问统计
+import dashboardRouter from '../dashboard/dashboard.router';
 
 //跨域
 import cors from 'cors';
@@ -60,6 +63,7 @@ app.use(
   appRouter,
   searchRouter,
   auditLogRouter,
+  dashboardRouter,
 );
 
 //开始use 默认异常处理器
