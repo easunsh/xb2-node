@@ -32,3 +32,12 @@ export const POSTS_PER_PAGE = parseInt(process.env['POSTS_PER_PAGE'], 10);
  * 评论分页参数配置
  */
 export const COMMENTS_PER_PAGE = parseInt(process.env['COMMENTS_PER_PAGE'], 10);
+
+/**
+ * 微信登录，网站应用
+ */
+export const {
+  WEIXIN_API_BASE_URL,
+  WEIXIN_WEBSITE_APP_ID,
+  WEIXIN_WEBSITE_APP_SECRET,
+} = process.env;
