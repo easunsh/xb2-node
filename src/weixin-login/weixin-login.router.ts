@@ -6,7 +6,7 @@ import {
 } from './weixin-login.middleware';
 import { validateLoginData } from '../auth/auth.middleware';
 import { accessLog } from '../access-log/access-log.middleware';
-import { hashPassword } from 'src/user/user.middleware';
+import { hashPassword } from '../user/user.middleware';
 const router = express.Router();
 
 /**

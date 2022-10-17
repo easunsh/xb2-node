@@ -3,7 +3,7 @@ import { updateUserMeta } from '../user-meta/user-meta.service';
 import { socketIoServer } from '../app/app.server';
 import { weixinLoginPostProcess } from './weixin-login.service';
 import { signToken } from '../auth/auth.service';
-import { UserData } from 'src/user/user.service';
+import { UserData } from '../user/user.service';
 /**
  * 微信登录：用户授权扫码后重定向到应用页面
  */
