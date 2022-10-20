@@ -16,8 +16,10 @@ import searchRouter from '../search/search.router';
 import auditLogRouter from '../audit-log/audit-log.router';
 //访问统计
 import dashboardRouter from '../dashboard/dashboard.router';
+//微信
 import weixinLoginRouter from '../weixin-login/weixin-login.router';
-
+//产品
+import productRouter from '../product/product.router';
 //跨域
 import cors from 'cors';
 import { ALLOW_ORIGIN } from './app.config';
@@ -66,6 +68,7 @@ app.use(
   auditLogRouter,
   dashboardRouter,
   weixinLoginRouter,
+  productRouter,
 );
 
 //开始use 默认异常处理器
