@@ -20,6 +20,8 @@ import dashboardRouter from '../dashboard/dashboard.router';
 import weixinLoginRouter from '../weixin-login/weixin-login.router';
 //产品
 import productRouter from '../product/product.router';
+//payment
+import paymentRouter from '../payment/payment.router';
 //跨域
 import cors from 'cors';
 import { ALLOW_ORIGIN } from './app.config';
@@ -69,6 +71,7 @@ app.use(
   dashboardRouter,
   weixinLoginRouter,
   productRouter,
+  paymentRouter,
 );
 
 //开始use 默认异常处理器
