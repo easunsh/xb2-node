@@ -51,3 +51,22 @@ export const getPorductByType = async (
   //提供结果
   return data[0] as ProductModel;
 };
+
+/**
+ * 定义按产品 ID 调取单个产品的方法
+ */
+export const getProductById = async (productId: number) => {
+  //准备查询
+  const statement = `
+    SELECT
+    *
+    FROM 
+    product
+    WHERE
+    product.id = ?
+   `;
+  //执行
+  const [data] = await connection.promise().query(statement, productId);
+  //提供结果
+  return data[0] as ProductModel;
+};
