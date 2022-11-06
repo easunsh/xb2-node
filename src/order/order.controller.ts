@@ -1,4 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { LicenseStatus } from '../license/license.model';
+import { createLicense } from '../license/license.service';
+import { ProductType } from '../product/product.model';
 import { OrderLogAction } from '../order-log/order-log.model';
 import { createdOrderLog } from '../order-log/order-log.service';
 import { createOrder, updateOrder } from './order.service';
@@ -13,18 +16,19 @@ export const store = async (
 ) => {
   //准备数据
   const {
-    user,
-    body: { order, resourceType, resourceId },
+    user: { id: userId },
+    body: { order, resourceType, resourceId, product },
   } = request;
 
   try {
     //创建订单
     const data = await createOrder(order);
+    const { insertId: orderId } = data;
 
     //创建订单日志
     await createdOrderLog({
-      userId: user.id,
-      orderId: order.insertId,
+      userId,
+      orderId,
       action: OrderLogAction.orderCreated,
       meta: JSON.stringify({
         ...order,
@@ -32,6 +36,17 @@ export const store = async (
         resourceId,
       }),
     });
+
+    //创建许可
+    if (product.type === ProductType.license) {
+      await createLicense({
+        userId,
+        orderId,
+        status: LicenseStatus.pending,
+        resourceType,
+        resourceId,
+      });
+    }
     //做出响应
     response.status(201).send(data);
     //下一步
