@@ -9,6 +9,7 @@ export enum OrderStatus {
 export class OrderModel {
   id?: number;
   userId?: number;
+  productId?: number;
   status?: OrderStatus;
   payment?: PaymentName;
   totalAmount?: number;

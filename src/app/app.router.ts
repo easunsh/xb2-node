@@ -1,4 +1,8 @@
 import express from 'express';
+import { ProductType } from '../product/product.model';
+import { postProcessSubscription } from '../subscription/subscription.service';
+import { getOrderById } from '../order/order.service';
+import { getProductById } from '../product/product.service';
 import { UserMetaType } from '../user-meta/user-meta.model';
 import {
   createUserMeta,
@@ -29,6 +33,21 @@ router.post('/echo', async (request, response) => {
   //update 测试
   //updateUserMeta(1, userMeta);
   // response.status(201).send(request.body);
+});
+
+/**
+ * orderId 为 刚刚的insertid
+ */
+router.post('/pay/:orderId', async (request, response) => {
+  const { orderId } = request.params;
+  const order = await getOrderById(parseInt(orderId, 10));
+  const product = await getProductById(order.productId);
+
+  if (product.type === ProductType.subscription) {
+    postProcessSubscription({ order, product });
+  }
+
+  response.sendStatus(200);
 });
 
 /**

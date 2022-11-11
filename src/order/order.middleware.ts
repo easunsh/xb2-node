@@ -39,38 +39,36 @@ export const orderGuard = async (
       const post = await getPostById(resourceId, {
         currentUser: { id: userId },
       });
-
       const isValidPost = post && post.status === PostStatus.published;
 
       if (!isValidPost) {
         throw new Error('BAD_REQUEST');
       }
-
-      //检查产品
-      const product = await getProductById(productId);
-      const isValidProduct =
-        product && product.status === ProductStatus.published;
-
-      if (!isValidProduct) {
-        throw new Error('BAD_REQUEST');
-      }
-
-      //准备订单数据
-      const order = {
-        userId,
-        status: OrderStatus.pending,
-        payment,
-        productId,
-        totalAmount: product.salePrice,
-      };
-
-      //设置请求主体
-      request.body = {
-        ...request.body,
-        order,
-        product,
-      };
     }
+    //检查产品
+    const product = await getProductById(productId);
+    const isValidProduct =
+      product && product.status === ProductStatus.published;
+
+    if (!isValidProduct) {
+      throw new Error('BAD_REQUEST');
+    }
+
+    //准备订单数据
+    const order = {
+      userId,
+      status: OrderStatus.pending,
+      payment,
+      productId,
+      totalAmount: product.salePrice,
+    };
+
+    //设置请求主体
+    request.body = {
+      ...request.body,
+      order,
+      product,
+    };
   } catch (error) {
     return next(error);
   }

@@ -10,6 +10,7 @@ export const createOrder = async (order: OrderModel) => {
         INSERT INTO \`order\`
         SET ?
      `;
+
   //执行
   const [data] = await connection.promise().query(statement, order);
   //提供结果
