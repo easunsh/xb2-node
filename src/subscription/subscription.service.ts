@@ -12,7 +12,7 @@ import {
   createSubscriptionLog,
   getSubscriptionLogByOrderId,
 } from '../subscription-log/subscription-log.service';
-import { getPorductByType } from '../product/product.service';
+import { getProductByType } from '../product/product.service';
 import { OrderLogModel } from '../order-log/order-log.model';
 /**
  * 创建订单
@@ -136,9 +136,8 @@ export const processSubscription = async (
       const daysRemaining = Math.abs(
         dayjs().diff(subscription.expired, 'days'),
       );
-
       //专业订阅产品
-      const proSubscriptionProduct = await getPorductByType('subscription', {
+      const proSubscriptionProduct = await getProductByType('subscription', {
         meta: {
           subscriptionType: SubscriptionType.pro,
         },
@@ -149,7 +148,7 @@ export const processSubscription = async (
         (proSubscriptionProduct.salePrice / 365) * daysRemaining;
 
       //标准订阅产品
-      const standardSubscriptionProduct = await getPorductByType(
+      const standardSubscriptionProduct = await getProductByType(
         'subscription',
         {
           meta: {
@@ -239,7 +238,7 @@ export const postProcessSubscription = async (
   let preType = subscription.type;
 
   //订阅状态
-  const status = SubscriptionStatus.vaild;
+  const status = SubscriptionStatus.valid;
 
   //日期时间格式
   const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';

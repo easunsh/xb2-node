@@ -9,7 +9,7 @@ export interface GetProductByTypeOptions {
   };
 }
 
-export const getPorductByType = async (
+export const getProductByType = async (
   type: string,
   options: GetProductByTypeOptions = {},
 ) => {

@@ -1,6 +1,6 @@
 //引入所需要的类型
 import { Request, Response, NextFunction } from 'express';
-import { getPorductByType } from './product.service';
+import { getProductByType } from './product.service';
 
 /**
  *获取许可产品
@@ -11,7 +11,7 @@ export const showLicenseProduct = async (
   next: NextFunction,
 ) => {
   try {
-    const licenseProduct = await getPorductByType('license');
+    const licenseProduct = await getProductByType('license');
     response.send(licenseProduct);
   } catch (error) {
     next(error);
@@ -28,7 +28,7 @@ export const showSubscriptionProduct = async (
 ) => {
   try {
     const data = [];
-    const standardSubscriptionProduct = await getPorductByType('subscription', {
+    const standardSubscriptionProduct = await getProductByType('subscription', {
       meta: {
         subscriptionType: 'standard',
       },
@@ -38,7 +38,7 @@ export const showSubscriptionProduct = async (
       data.push(standardSubscriptionProduct);
     }
 
-    const proSubscriptionProduct = await getPorductByType('subscription', {
+    const proSubscriptionProduct = await getProductByType('subscription', {
       meta: {
         subscriptionType: 'pro',
       },
