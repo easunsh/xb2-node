@@ -26,6 +26,8 @@ import paymentRouter from '../payment/payment.router';
 import orderRouter from '../order/order.router';
 //许可
 import licenseRouter from '../license/license.router';
+//订阅
+import subscriptionRouter from '../subscription/subscription.router';
 //跨域
 import cors from 'cors';
 import { ALLOW_ORIGIN } from './app.config';
@@ -78,6 +80,7 @@ app.use(
   paymentRouter,
   orderRouter,
   licenseRouter,
+  subscriptionRouter,
 );
 
 //开始use 默认异常处理器
