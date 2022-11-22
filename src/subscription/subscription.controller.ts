@@ -5,6 +5,9 @@ import {
   getUserValidSubscription,
 } from './subscription.service';
 import dayjs from 'dayjs';
+import { countDownloads } from '../download/download.service';
+import { SubscriptionType } from './subscription.model';
+import { STANDARD_SUBSCRIPTION_DOWNLOAD_LIMIT_PER_WEEK } from '../app/app.config';
 
 /**
  * 验证有效订阅
@@ -13,6 +16,8 @@ import dayjs from 'dayjs';
 export interface ValidSubscription extends SubscriptionLogModel {
   isExpired: boolean;
   daysRemaining: number;
+  weeklyDownloads: number;
+  weeklyDownloadsLimit: number;
 }
 export const validSubscription = async (
   request: Request,
@@ -36,6 +41,20 @@ export const validSubscription = async (
       validSubscription.daysRemaining = validSubscription.isExpired
         ? 0
         : dayjs(subscription.expired).diff(dayjs(), 'days');
+
+      const { count } = await countDownloads({
+        userId,
+        type: 'subscription',
+        datetime: '7-day',
+      });
+
+      validSubscription.weeklyDownloads = count;
+
+      if (subscription.type === SubscriptionType.standard) {
+        validSubscription.weeklyDownloadsLimit = STANDARD_SUBSCRIPTION_DOWNLOAD_LIMIT_PER_WEEK;
+      } else {
+        validSubscription.weeklyDownloadsLimit = null;
+      }
     }
 
     //做出响应

@@ -1,7 +1,11 @@
 import express from 'express';
 import { authCuard } from '../auth/auth.middleware';
 import * as fileController from './file.controller';
-import { fileInterceptor, fileProcessor } from './file.middleware';
+import {
+  filedownloadGuard,
+  fileInterceptor,
+  fileProcessor,
+} from './file.middleware';
 //access-log
 import { accessLog } from '../access-log/access-log.middleware';
 
@@ -39,6 +43,15 @@ router.get(
     resourceParamName: 'fileId',
   }),
   fileController.metadata,
+);
+
+/**
+ * 文件下载
+ */
+router.get(
+  '/files/:fileId/download',
+  filedownloadGuard,
+  fileController.download,
 );
 
 /**

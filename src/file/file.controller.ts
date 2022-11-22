@@ -75,6 +75,9 @@ export const serve = async (
      */
     const { size } = request.query;
 
+    //禁止获得原始图像，要有size 参数，要查看得有许可
+    if (!size) throw new Error('BAD_REQUEST');
+
     /**
      * 文件名与目录
      */
@@ -151,6 +154,34 @@ export const metadata = async (
     const data = _.pick(file, ['id', 'size', 'width', 'height', 'metadata']);
     //做出响应
     response.send(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 文件下载
+ */
+export const download = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  //data ready
+  const {
+    body: { file },
+  } = request;
+
+  try {
+    const filePath = path.join('uploads', file.filename);
+
+    // set header data
+    response.header({
+      'Content-type': `${file.mimetype}`,
+    });
+
+    // response
+    response.download(filePath, file.originalname);
   } catch (error) {
     next(error);
   }

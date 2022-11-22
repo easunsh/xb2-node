@@ -28,6 +28,9 @@ import orderRouter from '../order/order.router';
 import licenseRouter from '../license/license.router';
 //订阅
 import subscriptionRouter from '../subscription/subscription.router';
+
+//下载
+import downloadRouter from '../download/download.router';
 //跨域
 import cors from 'cors';
 import { ALLOW_ORIGIN } from './app.config';
@@ -81,6 +84,7 @@ app.use(
   orderRouter,
   licenseRouter,
   subscriptionRouter,
+  downloadRouter,
 );
 
 //开始use 默认异常处理器
