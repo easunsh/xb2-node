@@ -31,6 +31,8 @@ import subscriptionRouter from '../subscription/subscription.router';
 
 //下载
 import downloadRouter from '../download/download.router';
+//payment-url
+import paymentUrlRouter from '../payment-url/payment-url.router';
 //跨域
 import cors from 'cors';
 import { ALLOW_ORIGIN } from './app.config';
@@ -85,6 +87,7 @@ app.use(
   licenseRouter,
   subscriptionRouter,
   downloadRouter,
+  paymentUrlRouter,
 );
 
 //开始use 默认异常处理器
