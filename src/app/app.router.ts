@@ -9,19 +9,37 @@ import {
   getUserMetaByWeixinUnionId,
   updateUserMeta,
 } from '../user-meta/user-meta.service';
+import { logger, xmlBuilder, xmlParser } from './app.service';
+import { paymentRecived } from '../payment/payment.service';
 const router = express.Router();
 
 //简单测试
 router.get('/', (request, response) => {
-  response.send({ title: '小白兔开发之路' });
+  response.send({ title: '依桑国度' });
 });
 
 router.post('/echo', async (request, response) => {
+  //测试logo4j
+  // logger.info('test-----');
+  // logger.error('test-----');
+  // logger.debug('test-----');
+
+  //测试XML
+  const xmlData = xmlBuilder.buildObject({
+    message: '你好!',
+  });
+
+  logger.info('xmlData', xmlData);
+
+  //data 就是解析之后的对象数据
+  const data = await xmlParser.parseStringPromise(xmlData);
+  logger.debug('data', data);
+  response.status(201).send(request.body);
   //测试模拟微信登录的
   //模拟获取用户数据
-  const userMeta = await getUserMetaByWeixinUnionId('321');
+  // const userMeta = await getUserMetaByWeixinUnionId('321');
 
-  response.status(201).send(userMeta);
+  // response.status(201).send(userMeta);
   //用户数据模拟
   //const userMeta = {
   //     userId: 1,
@@ -47,6 +65,16 @@ router.post('/pay/:orderId', async (request, response) => {
     postProcessSubscription({ order, product });
   }
 
+  response.sendStatus(200);
+});
+
+/**
+ * 测试收到付款的方法
+ */
+
+router.post('/payments/notify', async (request, response) => {
+  // const { orderId } = request.body;
+  // paymentRecived(orderId, { message: '通知数据~~' });
   response.sendStatus(200);
 });
 

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config(); //会载入.env这个文件
 
 //应用配置
-export const { APP_PORT } = process.env;
+export const { APP_PORT, APP_NAME, APP_NAME_ALIAS } = process.env;
 
 //跨域资源共享的配置
 export const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN;

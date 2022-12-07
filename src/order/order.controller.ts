@@ -110,3 +110,23 @@ export const update = async (
     next(error);
   }
 };
+
+/**
+ * 订单支付
+ */
+export const pay = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  // data ready
+  const {
+    body: { order },
+  } = request;
+
+  try {
+    response.send(order);
+  } catch (error) {
+    next(error);
+  }
+};

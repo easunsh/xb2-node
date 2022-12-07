@@ -125,3 +125,39 @@ export const updateOrderGuard = async (
   //下一步
   next();
 };
+
+/**
+ * 订单支付守卫
+ */
+export const payOrderGuard = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  // 准备数据
+  const {
+    params: { orderId },
+    user: { id: userId },
+  } = request;
+
+  try {
+    // 检查订单
+    const order = await getOrderById(parseInt(orderId, 10));
+    const isValidOrder = order && order.status === OrderStatus.pending;
+
+    if (!isValidOrder) throw new Error('BAD_REQUEST');
+
+    // 检查拥有者
+    const isOwner = order.userId === userId;
+
+    if (!isOwner) throw new Error('FORBIDDEN');
+
+    // 设置请求
+    request.body = { order };
+  } catch (error) {
+    return next(error);
+  }
+
+  // 下一步
+  next();
+};

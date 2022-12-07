@@ -2,7 +2,11 @@ import express from 'express';
 import { accessLog } from '../access-log/access-log.middleware';
 import { accessControl, authCuard } from '../auth/auth.middleware';
 import * as orderController from './order.controller';
-import { orderGuard, updateOrderGuard } from './order.middleware';
+import {
+  orderGuard,
+  updateOrderGuard,
+  payOrderGuard,
+} from './order.middleware';
 
 const router = express.Router();
 
@@ -34,6 +38,16 @@ router.patch(
     resourceParamName: 'orderId',
   }),
   orderController.update,
+);
+
+/**
+ * 订单支付
+ */
+router.post(
+  '/orders/:orderId/pay',
+  authCuard,
+  payOrderGuard,
+  orderController.pay,
 );
 
 /**
