@@ -1,6 +1,6 @@
 export enum OrderLogAction {
   orderCreated = 'orderCreated',
-  orderUpdate = 'orderUpdated',
+  orderUpdated = 'orderUpdated',
   orderStatusChanged = 'orderStatusChanged',
   orderPaymentRecived = 'orderPaymentRecived',
 }

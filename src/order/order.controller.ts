@@ -6,6 +6,8 @@ import { OrderLogAction } from '../order-log/order-log.model';
 import { createdOrderLog } from '../order-log/order-log.service';
 import { createOrder, updateOrder } from './order.service';
 import { processSubscription } from '../subscription/subscription.service';
+import { PaymentName } from '../payment/payment.model';
+import { wxpay } from '../payment/wxpay/wxpay.service';
 
 /**
  * 创建订单
@@ -56,11 +58,11 @@ export const store = async (
 
       if (result) {
         await updateOrder(orderId, { totalAmount: result.order.totalAmount });
-        //创建订单日志
+        //创建订单日志d
         await createdOrderLog({
           userId,
           orderId,
-          action: OrderLogAction.orderUpdate,
+          action: OrderLogAction.orderUpdated,
           meta: JSON.stringify({
             totalAmount: result.order.totalAmount,
           }),
@@ -98,7 +100,7 @@ export const update = async (
     await createdOrderLog({
       userId: user.id,
       orderId: order.id,
-      action: OrderLogAction.orderUpdate,
+      action: OrderLogAction.orderUpdated,
       meta: JSON.stringify({
         ...dataForUpdate,
       }),
@@ -114,6 +116,12 @@ export const update = async (
 /**
  * 订单支付
  */
+
+export interface PrepayResult {
+  coderUrl?: string;
+  paymentUrl?: string;
+  payment?: PaymentName;
+}
 export const pay = async (
   request: Request,
   response: Response,
@@ -122,10 +130,25 @@ export const pay = async (
   // data ready
   const {
     body: { order },
+    user: { id: userId },
   } = request;
 
   try {
-    response.send(order);
+    const data: PrepayResult = {};
+    //如果支付方法是微信支付
+    if (order.payment === PaymentName.wxpay) {
+      const wxpayResult = await wxpay(order, request);
+      data.coderUrl = wxpayResult.code_url;
+      data.payment = PaymentName.wxpay;
+
+      await createdOrderLog({
+        userId,
+        orderId: order.id,
+        action: OrderLogAction.orderUpdated,
+        meta: JSON.stringify(wxpayResult),
+      });
+    }
+    response.send(data);
   } catch (error) {
     next(error);
   }

@@ -64,6 +64,11 @@ app.use(
 app.use(currentUser);
 
 /**
+ *  这样就能去处理XML
+ */
+app.use(express.text({ type: 'text/xml' }));
+
+/**
  * 开始use 处理路由
  * @return  use 应用就包含postRouter中包含的接口
  */
