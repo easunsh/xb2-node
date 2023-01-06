@@ -8,6 +8,7 @@ import {
   updateDownload,
 } from '../download/download.service';
 import { DATE_TIME_FORMAT } from '../app/app.config';
+import { socketIoServer } from '../app/app.server';
 
 /**
  * 文件过滤器设置
@@ -97,14 +98,15 @@ export const fileProcessor = async (
 /**
  * 文件下载守卫中间件
  */
-export const filedownloadGuard = async (
+export const fileDownloadGuard = async (
   request: Request,
   response: Response,
   next: NextFunction,
 ) => {
   // data ready
+  //socketId 触发事件后，可以把事件发给指定的客户端应用
   const {
-    query: { token },
+    query: { token, socketId },
     params: { fileId },
   } = request;
 
@@ -132,6 +134,12 @@ export const filedownloadGuard = async (
     await updateDownload(download.id, {
       used: dayjs().format(DATE_TIME_FORMAT),
     });
+
+    //触发事件，发给指定的客户端应用,触发的事件名为 fileDownloadUsed
+    //事件中携带的数据是download
+    if (socketId) {
+      socketIoServer.to(`${socketId}`).emit('fileDownloadUsed', download);
+    }
 
     const isVaildFile = file && file.postId === download.resourceId;
 
