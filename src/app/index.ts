@@ -69,6 +69,13 @@ app.use(currentUser);
 app.use(express.text({ type: 'text/xml' }));
 
 /**
+ * 处理FORM
+ * 支付宝的通知数据是form数据，需要安装一个中间件去处理。。
+ */
+
+app.use(express.urlencoded({ extended: true }));
+
+/**
  * 开始use 处理路由
  * @return  use 应用就包含postRouter中包含的接口
  */
