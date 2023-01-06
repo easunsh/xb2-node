@@ -49,6 +49,13 @@ export const getUser = (
     const { password } = options;
 
     //PASSWORD如果为true加上password字段一起查 ，否则为空白
+
+    //'status',IF( now() < subscription.expired, 如果是status的值给 'valid' , 否则status的值给 'expired')
+    //一个子查询
+    //(
+    // SELECT
+    // JSON_OBJECT(
+    // 'type',subscription.type,
     const statement = `
 		SELECT 
 			user.id, 
@@ -57,7 +64,19 @@ export const getUser = (
 				COUNT( avatar.id ),
 				1,
 				NULL
-			) AS avatar
+			) AS avatar,
+      (
+        SELECT
+          JSON_OBJECT(
+            'type',subscription.type,
+            'status',IF( now() < subscription.expired, 'valid' , 'expired')
+          )
+        FROM
+            subscription
+        WHERE 
+            user.id = subscription.userId
+            AND subscription.status = 'valid'
+      ) AS subscription
 			${password ? ',password' : ''} 
 			FROM user
 			LEFT JOIN avatar

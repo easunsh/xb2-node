@@ -2,7 +2,7 @@ import express from 'express';
 import { authCuard } from '../auth/auth.middleware';
 import * as fileController from './file.controller';
 import {
-  filedownloadGuard,
+  fileDownloadGuard,
   fileInterceptor,
   fileProcessor,
 } from './file.middleware';
@@ -50,7 +50,7 @@ router.get(
  */
 router.get(
   '/files/:fileId/download',
-  filedownloadGuard,
+  fileDownloadGuard,
   fileController.download,
 );
 
