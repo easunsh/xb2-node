@@ -208,7 +208,6 @@ export const getSubscriptionById = async (subscriptionId: number) => {
 /**
  * 订阅处理，后续处理，比如用户付款后
  */
-
 export interface postProcessSubscriptionOption {
   order: OrderLogModel;
   product: ProductModel;

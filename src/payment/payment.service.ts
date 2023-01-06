@@ -46,7 +46,6 @@ ORDER BY payment.index ASC
 用方法去处理收到付款以后的事情。paymentRecived
 
  */
-
 export const paymentRecived = async (orderId: number, paymentResult: any) => {
   //check order
   const order = await getOrderById(orderId);

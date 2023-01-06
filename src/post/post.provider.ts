@@ -4,24 +4,24 @@
  */
 export const sqlFragment = {
   user: `
-    JSON_OBJECT(
-        'id',user.id,
-        'name',user.name,
-        'avatar', IF(COUNT(avatar.id),1,null),
-        'subscription', (
-          SELECT
-            JSON_OBJECT(
-              'type',subscription.type,
-              'status',IF( now() < subscription.expired, 'valid' , 'expired')
-            )
-          FROM
-              subscription
-          WHERE 
-              user.id = subscription.userId
-              AND subscription.status = 'valid'
-        )
-    ) as user
-    `,
+  JSON_OBJECT(
+      'id',user.id,
+      'name',user.name,
+      'avatar', IF(COUNT(avatar.id),1,null),
+      'subscription', (
+        SELECT
+          JSON_OBJECT(
+            'type',subscription.type,
+            'status',IF( now() < subscription.expired, 'valid' , 'expired')
+          )
+        FROM
+            subscription
+        WHERE 
+            user.id = subscription.userId
+            AND subscription.status = 'valid'
+      )
+  ) as user
+  `,
 
   leftJoinUser: `
     LEFT JOIN user

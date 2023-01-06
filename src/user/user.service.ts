@@ -55,7 +55,6 @@ export const getUser = (
     // SELECT
     // JSON_OBJECT(
     // 'type',subscription.type,
-
     const statement = `
 		SELECT 
 			user.id, 
