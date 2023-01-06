@@ -9,6 +9,7 @@ import { ProductStatus, ProductType } from '../product/product.model';
 import { getLicenseByOrderId, updateLicense } from '../license/license.service';
 import { LicenseStatus } from '../license/license.model';
 import { postProcessSubscription } from '../subscription/subscription.service';
+import { socketIoServer } from '../app/app.server';
 /**
  * 获取支付方法
  */
@@ -81,6 +82,11 @@ export const paymentRecived = async (orderId: number, paymentResult: any) => {
 
   if (!isValidProduct) return;
 
+  //socketId
+  //微信支付attach或支付宝支付passback_params
+  const socketId = paymentResult.attach || paymentResult.passback_params;
+  const isVaildSocketId = socketId && socketId !== 'NULL';
+
   //许可产品
   if (product.type === ProductType.license) {
     const license = await getLicenseByOrderId(order.id);
@@ -91,10 +97,17 @@ export const paymentRecived = async (orderId: number, paymentResult: any) => {
     await updateLicense(license.id, {
       status: LicenseStatus.valid,
     });
+
+    if (isVaildSocketId) {
+      socketIoServer.to(socketId).emit('licenseStatusChanged', {
+        ...license,
+        status: LicenseStatus.valid,
+      });
+    }
   }
 
   //订阅产品
   if (product.type === ProductType.subscription) {
-    await postProcessSubscription({ order, product });
+    await postProcessSubscription({ order, product, socketId });
   }
 };

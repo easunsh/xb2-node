@@ -14,6 +14,7 @@ import {
 } from '../subscription-log/subscription-log.service';
 import { getProductByType } from '../product/product.service';
 import { OrderLogModel } from '../order-log/order-log.model';
+import { socketIoServer } from '../app/app.server';
 /**
  * 创建订单
  */
@@ -211,6 +212,7 @@ export const getSubscriptionById = async (subscriptionId: number) => {
 export interface postProcessSubscriptionOption {
   order: OrderLogModel;
   product: ProductModel;
+  socketId?: string;
 }
 export const postProcessSubscription = async (
   options: postProcessSubscriptionOption,
@@ -221,6 +223,7 @@ export const postProcessSubscription = async (
     product: {
       meta: { subscriptionType },
     },
+    socketId,
   } = options;
 
   //订阅日志
@@ -242,6 +245,9 @@ export const postProcessSubscription = async (
 
   //日期时间格式
   const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
+  //有效socketId 是否有效
+  const isVaildSocketId = socketId && socketId !== 'NULL';
 
   //新订阅
   if (subscription.status === SubscriptionStatus.pending) {
@@ -302,6 +308,17 @@ export const postProcessSubscription = async (
       preType,
     }),
   });
+
+  // 实时事件发送给客户端,socketId 是客户端的标识
+  if (isVaildSocketId) {
+    socketIoServer.to(socketId).emit('subscriptionChanged', {
+      ...SubscriptionLogAction,
+      type: SubscriptionType,
+      status,
+      expired: subscription.expired,
+      action,
+    });
+  }
 };
 
 /**
