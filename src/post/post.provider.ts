@@ -19,6 +19,7 @@ export const sqlFragment = {
         WHERE 
             user.id = subscription.userId
             AND subscription.status = 'valid'
+            LIMIT 1
       )
   ) as user
   `,

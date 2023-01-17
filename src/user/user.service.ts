@@ -75,6 +75,7 @@ export const getUser = (
         WHERE 
             user.id = subscription.userId
             AND subscription.status = 'valid'
+            LIMIT 1
       ) AS subscription
 			${password ? ',password' : ''} 
 			FROM user

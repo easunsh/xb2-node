@@ -14,16 +14,18 @@ export const validateLoginData = async (
   response: Response,
   next: NextFunction,
 ) => {
-  console.log('验证用户的登录数据');
+  console.log('auth.middleware 验证用户的登录数据');
 
   //获得请求来的数据
   const { name, password } = request.body;
+
   //验证必填数据
   if (!name) return next(new Error('NAME_IS_REQUIRED'));
   if (!password) return next(new Error('PASSWORD_IS_REQUIRED'));
 
   //验证用户名是否存在
   const user = await userService.getUserByName(name, { password: true });
+
   if (!user) return next(new Error('USER_DOES_NOT_EXIST'));
 
   //验证用户密码 ，对比用户提供的密码对比数据库中的HASH过的密码,返回true or false
@@ -120,6 +122,7 @@ export const currentUser = (
 
 interface AccessControlOptions {
   possession?: boolean;
+  isAdmin?: boolean;
 }
 
 /**
@@ -133,13 +136,17 @@ export const accessControl = (options: AccessControlOptions) => {
     console.log('访问控制');
 
     //解构选项
-    const { possession } = options;
+    const { possession, isAdmin } = options;
 
     //当前用户ID  前提 accessControl 放在 authCuard 后使用
     const { id: userId } = request.user;
 
     //放行管理员
     if (userId == 1) return next();
+
+    if (isAdmin) {
+      if (userId !== 1) return next(new Error('FORBIDDEN'));
+    }
 
     //准备资源
     //resourceIdParam 为请求的 id 值，

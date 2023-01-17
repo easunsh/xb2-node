@@ -34,6 +34,11 @@ export const POSTS_PER_PAGE = parseInt(process.env['POSTS_PER_PAGE'], 10);
 export const COMMENTS_PER_PAGE = parseInt(process.env['COMMENTS_PER_PAGE'], 10);
 
 /**
+ * 订单列表参数配置
+ */
+export const ORDERS_PER_PAGE = parseInt(process.env['ORDERS_PER_PAGE'], 10);
+
+/**
  * 微信登录，网站应用
  */
 export const {

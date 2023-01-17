@@ -45,17 +45,33 @@ export const updateLicense = async (
 export const getLicenseByOrderId = async (orderId: number) => {
   //准备查询
   const statement = `
-    SELECT 
-        *
-    FROM 
-        license
-    WHERE
-        license.orderId = ?
+  SELECT
+  license.id,
+  license.userId,
+  license.orderId,
+  license.resourceType,
+  license.resourceId,
+  license.status,
+  license.created,
+  JSON_OBJECT(
+    'id', post.id,
+    'title', post.title,
+    'user', JSON_OBJECT(
+      'id', resourceUser.id,
+      'name', resourceUser.name
+    )
+  ) AS resource
+FROM
+  license
+LEFT JOIN post ON license.resourceId = post.id
+LEFT JOIN user AS resourceUser ON post.userId = resourceUser.id
+WHERE
+  license.orderId = ?
      `;
   //执行
   const [data] = await connection.promise().query(statement, orderId);
   //提供结果
-  return data[0] as LicenseModel;
+  return data[0] as any;
 };
 
 /**
